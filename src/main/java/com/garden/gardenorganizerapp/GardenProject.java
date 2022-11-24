@@ -73,14 +73,12 @@ public class GardenProject {
                 )
         ));
         gardenLayer.getChildren().add(canvas);
-//test
+
         this.garden = new Scene(gardenLayer, 600, 600, Color.GREEN);
 
         stage.setScene(garden);
         stage.setTitle(identifier);
     }
-
-
 
     private void drawLines(GraphicsContext gc) {
 
