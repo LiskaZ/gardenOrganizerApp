@@ -60,7 +60,7 @@ public class GardenProject {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Paint.valueOf("#847743"));
         drawLines(gc);
-        
+
         VBox gardenLayer = new VBox();
         gardenLayer.setAlignment(Pos.CENTER);
         gardenLayer.setBackground(new Background(
@@ -73,7 +73,7 @@ public class GardenProject {
                 )
         ));
         gardenLayer.getChildren().add(canvas);
-
+//test
         this.garden = new Scene(gardenLayer, 600, 600, Color.GREEN);
 
         stage.setScene(garden);
