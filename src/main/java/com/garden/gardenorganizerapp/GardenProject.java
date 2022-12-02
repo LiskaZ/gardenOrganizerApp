@@ -30,8 +30,6 @@ public class GardenProject {
     private int maxWidth;
     private String identifier;
 
-    private Paint paint;
-
     public GardenProject(Stage stage) throws IOException {
         this.stage = stage;
         fxmlLoader = new FXMLLoader(getClass().getResource("garden-view.fxml"));
@@ -56,12 +54,8 @@ public class GardenProject {
     }
 
     public void createGardenLayer() {
-        Canvas canvas = new Canvas(this.maxWidth, this.maxHeight);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setFill(Paint.valueOf("#847743"));
-        drawLines(gc);
-
         VBox gardenLayer = new VBox();
+
         gardenLayer.setAlignment(Pos.CENTER);
         gardenLayer.setBackground(new Background(
                 new BackgroundFill(
@@ -72,6 +66,14 @@ public class GardenProject {
                         ), CornerRadii.EMPTY, Insets.EMPTY
                 )
         ));
+
+        this.maxHeight = evaluateGardenSize(maxHeight);
+        this.maxWidth = evaluateGardenSize(maxWidth);
+
+        Canvas canvas = new Canvas(this.maxWidth, this.maxHeight);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        drawLines(gc);
+
         gardenLayer.getChildren().add(canvas);
 
         this.garden = new Scene(gardenLayer, 600, 600, Color.GREEN);
@@ -80,12 +82,32 @@ public class GardenProject {
         stage.setTitle(identifier);
     }
 
+    private int evaluateGardenSize(int length) {
+
+        if (length % 10 >= 5){
+            return length + (10 - length % 10);
+        } else {
+            return length - (length % 10);
+        }
+
+    }
+
     private void drawLines(GraphicsContext gc) {
 
         gc.beginPath();
 
-        // TODO Skalieren, falls Garten größer als 600cm
-        gc.fillRect(0,0, maxWidth, maxHeight);
+        gc.setFill(Paint.valueOf("#847743"));
+        gc.fillRect(0, 0, maxWidth, maxHeight);
+
+        gc.setStroke(Paint.valueOf("#625932"));
+
+        for (int i = 0; i <= maxHeight; i = i + 20) {
+            gc.strokeLine(0, i, maxHeight, i);
+        }
+
+        for (int i = 0; i <= maxWidth; i = i + 20) {
+            gc.strokeLine(i, 0, i, maxWidth);
+        }
 
     }
 }
