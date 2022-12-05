@@ -9,7 +9,7 @@
 <?import com.sun.javafx.scene.control.IntegerField?>
 <?import javafx.scene.text.Font?>
 <VBox alignment="CENTER" spacing="5.0" style="-fx-background-color: green;" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.garden.gardenorganizerapp.GardenController">
+      fx:controller="com.garden.gardenorganizerapp.NewGardenViewController">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
@@ -22,5 +22,5 @@
     <TextField fx:id="widthIntegerField" promptText="Gesamtbreite des Gartens in cm" maxWidth="300"/>
     <TextField fx:id="heightIntegerField" promptText="Gesamtlänge des Gartens in cm" maxWidth="300"/>
 
-    <Button fx:id="createGarden" text="Garten erstellen" onAction="#onEditGardenButtonClick"/>
+    <Button fx:id="createGarden" text="Garten erstellen" onAction="#onCreateGardenButtonClick"/>
 </VBox>
