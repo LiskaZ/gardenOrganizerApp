@@ -6,4 +6,6 @@ module com.garden.gardenorganizerapp {
 
     opens com.garden.gardenorganizerapp to javafx.fxml;
     exports com.garden.gardenorganizerapp;
+    exports com.garden.gardenorganizerapp.viewcontrollers;
+    opens com.garden.gardenorganizerapp.viewcontrollers to javafx.fxml;
 }

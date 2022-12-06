@@ -32,7 +32,7 @@ public class GardenWidget extends Canvas {
         int gridX = (int)x / GRID_WIDTH;
         int gridY = (int)y / GRID_WIDTH;
 
-        TheGarden.addSpot(new PlantingSpot(gridX, gridY, Color.GREEN));
+        TheGarden.addSpot(new PlantingSpot(gridX, gridY, Color.YELLOWGREEN));
 
         drawPlantingSpots();
     }

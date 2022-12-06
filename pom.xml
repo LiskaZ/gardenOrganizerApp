@@ -53,7 +53,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.garden.gardenorganizerapp/com.garden.gardenorganizerapp.HelloApplication
+                            <mainClass>com.garden.gardenorganizerapp/com.garden.gardenorganizerapp.GardenApplication
                             </mainClass>
                         </configuration>
                     </execution>
