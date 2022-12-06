@@ -21,6 +21,7 @@
     <TextField fx:id="titleTextField" promptText="Gartenname eingeben" maxWidth="300"/>
     <TextField fx:id="widthIntegerField" promptText="Gesamtbreite des Gartens in cm" maxWidth="300"/>
     <TextField fx:id="heightIntegerField" promptText="Gesamtlänge des Gartens in cm" maxWidth="300"/>
+    <TextField fx:id="gridSizeIntegerField" promptText="Rastergröße" maxWidth="300" text="20" />
 
     <Button fx:id="createGarden" text="Garten erstellen" onAction="#onCreateGardenButtonClick"/>
 </VBox>

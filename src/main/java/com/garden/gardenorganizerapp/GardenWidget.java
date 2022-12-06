@@ -7,8 +7,6 @@ import javafx.scene.paint.Paint;
 
 public class GardenWidget extends Canvas {
 
-    private static int GRID_WIDTH = 20;
-
     private Garden TheGarden;
     public GardenWidget(Garden garden)
     {
@@ -29,8 +27,8 @@ public class GardenWidget extends Canvas {
 
         gc.setFill(Color.ALICEBLUE);
 
-        int gridX = (int)x / GRID_WIDTH;
-        int gridY = (int)y / GRID_WIDTH;
+        int gridX = (int)x / TheGarden.getGridSize();
+        int gridY = (int)y / TheGarden.getGridSize();
 
         TheGarden.addSpot(new PlantingSpot(gridX, gridY, Color.YELLOWGREEN));
 
@@ -47,11 +45,11 @@ public class GardenWidget extends Canvas {
 
         gc.setStroke(Paint.valueOf("#625932"));
 
-        for (int i = 0; i <= this.TheGarden.getWidth(); i+= GRID_WIDTH) {
+        for (int i = 0; i <= this.TheGarden.getWidth(); i+= TheGarden.getGridSize()) {
             gc.strokeLine(0, i, this.TheGarden.getWidth(), i);
         }
 
-        for (int i = 0; i <=  this.TheGarden.getHeight(); i+= GRID_WIDTH) {
+        for (int i = 0; i <=  this.TheGarden.getHeight(); i+= TheGarden.getGridSize()) {
             gc.strokeLine(i, 0, i,  this.TheGarden.getHeight());
         }
 
@@ -63,7 +61,7 @@ public class GardenWidget extends Canvas {
         for(PlantingSpot s: TheGarden.getSpots())
         {
             gc.setFill(s.getC());
-            gc.fillRect(s.getX() * GRID_WIDTH + 1, s.getY() * GRID_WIDTH + 1, GRID_WIDTH - 2, GRID_WIDTH - 2);
+            gc.fillRect(s.getX() * TheGarden.getGridSize() + 1, s.getY() * TheGarden.getGridSize() + 1, TheGarden.getGridSize() - 2, TheGarden.getGridSize() - 2);
         }
     }
 }

@@ -36,8 +36,15 @@ public class Garden {
 
     private String name;
 
-    public Garden(int w, int h, String name)
+    public int getGridSize() {
+        return gridSize;
+    }
+
+    private int gridSize = 20;
+
+    public Garden(int w, int h, String name, int gridSize)
     {
+        this.gridSize = gridSize;
         this.width = evaluateGardenSize(w);
         this.height = evaluateGardenSize(h);
         this.name = name;
@@ -46,10 +53,10 @@ public class Garden {
 
     private int evaluateGardenSize(int length) {
 
-        if (length % 10 >= 5){
-            return length + (10 - length % 10);
+        if (length % this.gridSize >= this.gridSize/2){
+            return length + (this.gridSize - length % this.gridSize);
         } else {
-            return length - (length % 10);
+            return length - (length % this.gridSize);
         }
     }
 

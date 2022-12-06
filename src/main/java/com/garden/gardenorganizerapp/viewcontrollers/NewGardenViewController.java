@@ -28,6 +28,9 @@ public class NewGardenViewController implements IViewController{
     private TextField widthIntegerField;
 
     @FXML
+    private TextField gridSizeIntegerField;
+
+    @FXML
     private Button createGarden;
 
     public NewGardenViewController() throws IOException {
@@ -40,10 +43,15 @@ public class NewGardenViewController implements IViewController{
         s.setScene(gardenScene);
     }
     public void onCreateGardenButtonClick() throws IOException {
-        int width = parseInt(widthIntegerField.getText().isEmpty() ? "0" : widthIntegerField.getText());
-        int height = parseInt(heightIntegerField.getText().isEmpty() ? "0" : heightIntegerField.getText());
+        int width = readNumber(widthIntegerField);
+        int height = readNumber(heightIntegerField);
+        int gridSize = readNumber(gridSizeIntegerField);
 
         ViewLoader<GardenGridViewController> l = new ViewLoader<GardenGridViewController>("garden-grid-view.fxml");
-        l.getController().setGarden(new Garden(height, width, titleTextField.getText()));
+        l.getController().setGarden(new Garden(height, width, titleTextField.getText(), gridSize));
+    }
+
+    private int readNumber (TextField t) {
+        return parseInt(t.getText().isEmpty() ? "0" : t.getText());
     }
 }
