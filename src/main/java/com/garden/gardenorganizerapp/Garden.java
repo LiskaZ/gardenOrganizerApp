@@ -62,7 +62,7 @@ public class Garden {
 
     public int normalizeCoordToGrid(double coord)
     {
-        return normalizeCoord((int)coord) / this.gridSize;
+        return (int)coord / this.gridSize;
     }
 
     public Vector<PlantingArea> getAreas() {

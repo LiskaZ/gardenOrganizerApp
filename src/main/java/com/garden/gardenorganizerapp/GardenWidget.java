@@ -59,7 +59,6 @@ public class GardenWidget extends Canvas {
     {
         if(currentMouseCoord != null) {
             addSelectedSpotsToPlantingArea();
-            currentMouseCoord = null;
         }
         drawGarden();
     }
@@ -69,64 +68,66 @@ public class GardenWidget extends Canvas {
         System.out.println(String.format("onMouseClicked: Dragging: %b", isAllowedToHandleClick()));
         if (isAllowedToHandleClick())
         {
-            currentMouseCoord = new Point2D(x, y);
-            addSelectedSpotsToPlantingArea();
+            addSingleSpotToPlantingArea(x, y);
         }
-        else
-        {
+        else {
             enableHandleClick();
         }
 
         drawGarden();
     }
 
+    private void addSingleSpotToPlantingArea(double x, double y)
+    {
+        if(area == null)
+        {
+            area = new PlantingArea();
+        }
+
+        int gridX = TheGarden.normalizeCoordToGrid(x);
+        int gridY = TheGarden.normalizeCoordToGrid(y);
+
+        area.addSpot(new PlantingSpot(gridX, gridY, Color.YELLOWGREEN));
+    }
+
     private void addSelectedSpotsToPlantingArea()
     {
-        if(isAllowedToHandleClick())
-        {
-            int gridX = TheGarden.normalizeCoordToGrid(currentMouseCoord.getX());
-            int gridY = TheGarden.normalizeCoordToGrid(currentMouseCoord.getY());
+        double posStartX = mouseDraggingStartCoord.getX();
+        double posStartY = mouseDraggingStartCoord.getY();
 
-            area.addSpot(new PlantingSpot(gridX, gridY, Color.YELLOWGREEN));
+        double posEndX = this.currentMouseCoord.getX();
+        double posEndY = this.currentMouseCoord.getY();
+
+        if (posStartX > posEndX) {
+            posStartX = this.currentMouseCoord.getX();
+            posEndX = mouseDraggingStartCoord.getX();
         }
-        else
+        if (posStartY > posEndY) {
+            posStartY = this.currentMouseCoord.getY();
+            posEndY = mouseDraggingStartCoord.getY();
+        }
+
+        if(area == null)
         {
-            double posStartX = mouseDraggingStartCoord.getX();
-            double posStartY = mouseDraggingStartCoord.getY();
-
-            double posEndX = this.currentMouseCoord.getX();
-            double posEndY = this.currentMouseCoord.getY();
-
-            if (posStartX > posEndX) {
-                posStartX = this.currentMouseCoord.getX();
-                posEndX = mouseDraggingStartCoord.getX();
-            }
-            if (posStartY > posEndY) {
-                posStartY = this.currentMouseCoord.getY();
-                posEndY = mouseDraggingStartCoord.getY();
-            }
-
-            if(area == null)
+            area = new PlantingArea();
+        }
+        for(int x = TheGarden.normalizeCoordToGrid(posStartX); x <= TheGarden.normalizeCoordToGrid(posEndX); ++x)
+        {
+            for(int y = TheGarden.normalizeCoordToGrid(posStartY); y <= TheGarden.normalizeCoordToGrid(posEndY); ++y)
             {
-                area = new PlantingArea();
-            }
-            for(int x = TheGarden.normalizeCoordToGrid(posStartX); x < TheGarden.normalizeCoordToGrid(posEndX); ++x)
-            {
-                for(int y = TheGarden.normalizeCoordToGrid(posStartY); y < TheGarden.normalizeCoordToGrid(posEndY); ++y)
-                {
-                    area.addSpot(new PlantingSpot(x, y, Color.YELLOWGREEN));
-                }
+                area.addSpot(new PlantingSpot(x, y, Color.YELLOWGREEN));
             }
         }
     }
 
     private boolean isAllowedToHandleClick()
     {
-        return currentMouseCoord == null;
+        return this.currentMouseCoord == null;
     }
 
     private void enableHandleClick()
     {
+        System.out.println("enableHandleClick");
         currentMouseCoord = null;
     }
 
