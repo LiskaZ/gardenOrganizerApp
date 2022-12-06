@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="gardenOrganizerApp" target="19" />
+      <module name="gardenOrganizerApp" target="0" />
     </bytecodeTargetLevel>
   </component>
 </project>

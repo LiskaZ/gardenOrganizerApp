@@ -16,7 +16,7 @@ public class PlantingSpot {
         return y;
     }
 
-    public Color getC() {
+    public Color getColor() {
         return c;
     }
 
