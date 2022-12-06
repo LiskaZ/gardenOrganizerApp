@@ -3,6 +3,7 @@ package com.garden.gardenorganizerapp.viewcontrollers;
 import com.garden.gardenorganizerapp.Garden;
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.GardenWidget;
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -51,5 +52,12 @@ public class GardenGridViewController implements IViewController {
         this.gardenScene.setFill(Color.GREEN);
 
         stage.setTitle(this.garden.getName());
+    }
+
+    public void onNewBedClick(ActionEvent actionEvent) {
+
+    }
+
+    public void onAddPlantsClick(ActionEvent actionEvent) {
     }
 }
