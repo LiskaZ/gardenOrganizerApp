@@ -1,6 +1,5 @@
 package com.garden.gardenorganizerapp.viewcontrollers;
 
-import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.ViewLoader;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;

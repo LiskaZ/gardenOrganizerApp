@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -17,13 +18,10 @@ import java.io.IOException;
 
 public class GardenGridViewController implements IViewController {
 
-    private VBox gardenSettingsLayer;
+    private BorderPane gardenSettingsLayer;
 
     @FXML
     private VBox gardenCanvas;
-
-    @FXML
-    private Label gardenTitle;
 
     private Scene gardenScene;
 
@@ -41,7 +39,7 @@ public class GardenGridViewController implements IViewController {
     public void createScene(Parent gardenSettingsLayer, Stage s, int sceneSize)
     {
         this.stage = s;
-        this.gardenSettingsLayer = (VBox) gardenSettingsLayer;
+        this.gardenSettingsLayer = (BorderPane) gardenSettingsLayer;
         this.gardenScene = new Scene(this.gardenSettingsLayer, sceneSize, sceneSize);
         s.setScene(gardenScene);
     }
@@ -49,7 +47,6 @@ public class GardenGridViewController implements IViewController {
     public void setGarden(Garden garden)
     {
         this.garden = garden;
-        this.gardenTitle.setText(garden.getName());
         gardenWidget = new GardenWidget(this.garden);
         createGardenLayer();
     }
@@ -57,7 +54,6 @@ public class GardenGridViewController implements IViewController {
     public void createGardenLayer() {
 
         gardenCanvas.getChildren().add(gardenWidget);
-        gardenSettingsLayer.setAlignment(Pos.CENTER);
         this.gardenScene.setFill(Color.GREEN);
 
         stage.setTitle(this.garden.getName());

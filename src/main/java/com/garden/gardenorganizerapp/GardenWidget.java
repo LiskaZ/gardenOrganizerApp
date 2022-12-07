@@ -133,11 +133,6 @@ public class GardenWidget extends Canvas {
 
         gc.setStroke(Paint.valueOf("#625932"));
 
-        System.out.println("Höhe " + this.TheGarden.getHeight());
-        System.out.println(this.TheGarden.getGridSize());
-        System.out.println("Breite " + this.TheGarden.getWidth());
-
-
         for (int i = 0; i <= this.TheGarden.getHeight(); i+= TheGarden.getGridSize()) {
             gc.strokeLine(0, i, this.TheGarden.getWidth(), i);
         }
