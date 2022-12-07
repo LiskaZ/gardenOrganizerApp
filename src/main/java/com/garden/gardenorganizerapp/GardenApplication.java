@@ -2,7 +2,6 @@ package com.garden.gardenorganizerapp;
 
 import com.garden.gardenorganizerapp.viewcontrollers.StartViewController;
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
