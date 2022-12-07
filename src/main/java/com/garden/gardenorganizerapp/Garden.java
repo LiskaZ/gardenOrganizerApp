@@ -49,7 +49,9 @@ public class Garden {
     {
         this.gridSize = gridSize;
         this.width = normalizeGrid(w);
+        System.out.println(String.format("Breite: %d, normalisierte Breite: %d", w, normalizeGrid(w)));
         this.height = normalizeGrid(h);
+        System.out.println(String.format("Hoehe: %d, normalisierte Hoehe: %d", h, normalizeGrid(h)));
         this.name = name;
         this.areas = new Vector<PlantingArea>();
         this.percentage = percentage;

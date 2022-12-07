@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -20,6 +21,9 @@ public class GardenGridViewController implements IViewController {
 
     @FXML
     private VBox gardenCanvas;
+
+    @FXML
+    private Label gardenTitle;
 
     private Scene gardenScene;
 
@@ -45,6 +49,7 @@ public class GardenGridViewController implements IViewController {
     public void setGarden(Garden garden)
     {
         this.garden = garden;
+        this.gardenTitle.setText(garden.getName());
         gardenWidget = new GardenWidget(this.garden);
         createGardenLayer();
     }

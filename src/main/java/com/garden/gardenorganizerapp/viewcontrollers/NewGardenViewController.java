@@ -50,7 +50,7 @@ public class NewGardenViewController implements IViewController{
         double height = readNumber(heightIntegerField);
         double gridSize = readNumber(gridSizeIntegerField);
 
-        int gardenSize = sceneSize - 100;
+        int gardenSize = sceneSize - 150;
         double percentage = 1;
 
         if (width > gardenSize && width > height){
@@ -67,7 +67,7 @@ public class NewGardenViewController implements IViewController{
         }
 
         ViewLoader<GardenGridViewController> l = new ViewLoader<GardenGridViewController>("garden-grid-view.fxml");
-        l.getController().setGarden(new Garden((int) height, (int) width, titleTextField.getText(), (int) gridSize, percentage));
+        l.getController().setGarden(new Garden((int) width, (int) height, titleTextField.getText(), (int) gridSize, percentage));
     }
 
     private int readNumber (TextField t) {

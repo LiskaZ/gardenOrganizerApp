@@ -60,7 +60,6 @@ public class GardenWidget extends Canvas {
         }
         drawGarden();
     }
-
     public void onMouseClicked(double x, double y)
     {
         if (isAllowedToHandleClick())
@@ -73,7 +72,6 @@ public class GardenWidget extends Canvas {
 
         drawGarden();
     }
-
     private void addSingleSpotToPlantingArea(double x, double y)
     {
         if(area == null)
@@ -86,7 +84,6 @@ public class GardenWidget extends Canvas {
 
         area.addSpot(new PlantingSpot(gridX, gridY, Color.YELLOWGREEN));
     }
-
     private void addSelectedSpotsToPlantingArea()
     {
         double posStartX = mouseDraggingStartCoord.getX();
@@ -116,7 +113,6 @@ public class GardenWidget extends Canvas {
             }
         }
     }
-
     private boolean isAllowedToHandleClick()
     {
         return this.currentMouseCoord == null;
@@ -137,11 +133,16 @@ public class GardenWidget extends Canvas {
 
         gc.setStroke(Paint.valueOf("#625932"));
 
-        for (int i = 0; i <= this.TheGarden.getWidth(); i+= TheGarden.getGridSize()) {
+        System.out.println("Höhe " + this.TheGarden.getHeight());
+        System.out.println(this.TheGarden.getGridSize());
+        System.out.println("Breite " + this.TheGarden.getWidth());
+
+
+        for (int i = 0; i <= this.TheGarden.getHeight(); i+= TheGarden.getGridSize()) {
             gc.strokeLine(0, i, this.TheGarden.getWidth(), i);
         }
 
-        for (int i = 0; i <=  this.TheGarden.getHeight(); i+= TheGarden.getGridSize()) {
+        for (int i = 0; i <=  this.TheGarden.getWidth(); i+= TheGarden.getGridSize()) {
             gc.strokeLine(i, 0, i,  this.TheGarden.getHeight());
         }
 
