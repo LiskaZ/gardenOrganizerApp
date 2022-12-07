@@ -25,4 +25,8 @@ public class PlantingSpot {
         this.y = y;
         this.c = c;
     }
+
+    public void setColor(Color c) {
+        this.c = c;
+    }
 }
