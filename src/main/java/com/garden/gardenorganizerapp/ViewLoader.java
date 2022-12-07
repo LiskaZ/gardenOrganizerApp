@@ -14,7 +14,7 @@ public class ViewLoader <T extends IViewController>{
     public ViewLoader(String xml) throws IOException {
         fxmlLoader = new FXMLLoader(getClass().getResource(xml));
         parent = fxmlLoader.load();
-        getController().createScene(parent, GardenApplication.THE_STAGE);
+        getController().createScene(parent, GardenApplication.THE_STAGE, 700);
     }
 
     public T getController()

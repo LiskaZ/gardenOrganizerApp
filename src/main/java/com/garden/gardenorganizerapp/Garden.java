@@ -36,27 +36,31 @@ public class Garden {
 
     private String name;
 
+    // Prozent, um die der Garten verkleinert wurde
+    private double percentage;
+
     public int getGridSize() {
         return gridSize;
     }
 
     private int gridSize = 20;
 
-    public Garden(int w, int h, String name, int gridSize)
+    public Garden(int w, int h, String name, int gridSize, double percentage)
     {
         this.gridSize = gridSize;
-        this.width = normalizeCoord(w);
-        this.height = normalizeCoord(h);
+        this.width = normalizeGrid(w);
+        this.height = normalizeGrid(h);
         this.name = name;
         this.areas = new Vector<PlantingArea>();
+        this.percentage = percentage;
     }
 
-    private int normalizeCoord(int coord)
+    private int normalizeGrid(int n)
     {
-        if (coord % this.gridSize >= this.gridSize/2){
-            return coord + (this.gridSize - coord % this.gridSize);
+        if (n % this.gridSize >= this.gridSize/2){
+            return n + (this.gridSize - n % this.gridSize);
         } else {
-            return coord - (coord % this.gridSize);
+            return n - (n % this.gridSize);
         }
     }
 

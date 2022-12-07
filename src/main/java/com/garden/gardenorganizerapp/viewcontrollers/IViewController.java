@@ -5,6 +5,6 @@ import javafx.stage.Stage;
 
 public interface IViewController {
 
-    public void createScene(Parent p, Stage s);
+    public void createScene(Parent p, Stage s, int sceneSize);
 
 }

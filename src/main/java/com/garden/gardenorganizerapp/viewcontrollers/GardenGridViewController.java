@@ -4,6 +4,7 @@ import com.garden.gardenorganizerapp.Garden;
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.GardenWidget;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,6 +17,9 @@ import java.io.IOException;
 public class GardenGridViewController implements IViewController {
 
     private VBox gardenSettingsLayer;
+
+    @FXML
+    private VBox gardenCanvas;
 
     private Scene gardenScene;
 
@@ -30,11 +34,11 @@ public class GardenGridViewController implements IViewController {
 
     }
 
-    public void createScene(Parent gardenSettingsLayer, Stage s)
+    public void createScene(Parent gardenSettingsLayer, Stage s, int sceneSize)
     {
         this.stage = s;
         this.gardenSettingsLayer = (VBox) gardenSettingsLayer;
-        this.gardenScene = new Scene(this.gardenSettingsLayer, 600, 600);
+        this.gardenScene = new Scene(this.gardenSettingsLayer, sceneSize, sceneSize);
         s.setScene(gardenScene);
     }
 
@@ -47,7 +51,7 @@ public class GardenGridViewController implements IViewController {
 
     public void createGardenLayer() {
 
-        gardenSettingsLayer.getChildren().add(gardenWidget);
+        gardenCanvas.getChildren().add(gardenWidget);
         gardenSettingsLayer.setAlignment(Pos.CENTER);
         this.gardenScene.setFill(Color.GREEN);
 

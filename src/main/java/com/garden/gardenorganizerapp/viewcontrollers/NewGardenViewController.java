@@ -33,22 +33,41 @@ public class NewGardenViewController implements IViewController{
     @FXML
     private Button createGarden;
 
+    private int sceneSize;
+
     public NewGardenViewController() throws IOException {
 
     }
 
-    public void createScene(Parent p, Stage s)
+    public void createScene(Parent p, Stage s, int sceneSize)
     {
-        this.gardenScene = new Scene(p, 600, 600);
+        this.sceneSize = sceneSize;
+        this.gardenScene = new Scene(p, sceneSize, sceneSize);
         s.setScene(gardenScene);
     }
     public void onCreateGardenButtonClick() throws IOException {
-        int width = readNumber(widthIntegerField);
-        int height = readNumber(heightIntegerField);
-        int gridSize = readNumber(gridSizeIntegerField);
+        double width = readNumber(widthIntegerField);
+        double height = readNumber(heightIntegerField);
+        double gridSize = readNumber(gridSizeIntegerField);
+
+        int gardenSize = sceneSize - 100;
+        double percentage = 1;
+
+        if (width > gardenSize && width > height){
+            percentage = gardenSize/ width;
+            width = gardenSize;
+            height = (height * percentage);
+            gridSize = gridSize * percentage;
+        }
+        if (height > gardenSize && height > width){
+            percentage = gardenSize/ height;
+            height = gardenSize;
+            width = (width * percentage);
+            gridSize = gridSize * percentage;
+        }
 
         ViewLoader<GardenGridViewController> l = new ViewLoader<GardenGridViewController>("garden-grid-view.fxml");
-        l.getController().setGarden(new Garden(height, width, titleTextField.getText(), gridSize));
+        l.getController().setGarden(new Garden((int) height, (int) width, titleTextField.getText(), (int) gridSize, percentage));
     }
 
     private int readNumber (TextField t) {

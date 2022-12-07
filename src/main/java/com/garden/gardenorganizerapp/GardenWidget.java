@@ -43,12 +43,10 @@ public class GardenWidget extends Canvas {
     }
 
     public void onMousePressed(double x, double y) {
-        System.out.println(String.format("onMousePressed: %b", shouldDrawSelectionRect()));
         this.mouseDraggingStartCoord = new Point2D(x,y);
     }
 
     public void onMouseDragged(double x, double y){
-        System.out.println(String.format("onMouseDragged: %b", shouldDrawSelectionRect()));
 
         this.currentMouseCoord = new Point2D(x, y);
 
@@ -65,7 +63,6 @@ public class GardenWidget extends Canvas {
 
     public void onMouseClicked(double x, double y)
     {
-        System.out.println(String.format("onMouseClicked: Dragging: %b", isAllowedToHandleClick()));
         if (isAllowedToHandleClick())
         {
             addSingleSpotToPlantingArea(x, y);
@@ -127,7 +124,6 @@ public class GardenWidget extends Canvas {
 
     private void enableHandleClick()
     {
-        System.out.println("enableHandleClick");
         currentMouseCoord = null;
     }
 
@@ -201,9 +197,10 @@ public class GardenWidget extends Canvas {
     {
         if(area != null) {
             GraphicsContext gc = getGraphicsContext2D();
+            double gSize = TheGarden.getGridSize();
             for (PlantingSpot s : area.getSpots()) {
                 gc.setFill(s.getColor());
-                gc.fillRect(s.getX() * TheGarden.getGridSize() + 1, s.getY() * TheGarden.getGridSize() + 1, TheGarden.getGridSize() - 2, TheGarden.getGridSize() - 2);
+                gc.fillRect(s.getX() * gSize + 1, s.getY() * gSize + 1, gSize - 2, gSize - 2);
             }
         }
     }

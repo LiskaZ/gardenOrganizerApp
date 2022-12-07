@@ -44,8 +44,8 @@ public class StartViewController implements IViewController {
     }
 
     @Override
-    public void createScene(Parent p, Stage s) {
-        Scene scene = new Scene(p, 600, 600);
+    public void createScene(Parent p, Stage s, int sceneSize) {
+        Scene scene = new Scene(p, sceneSize, sceneSize);
         s.setTitle("New Garden");
         s.setScene(scene);
         s.show();
