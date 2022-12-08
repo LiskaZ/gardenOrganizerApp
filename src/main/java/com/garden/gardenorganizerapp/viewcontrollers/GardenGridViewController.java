@@ -1,7 +1,8 @@
 package com.garden.gardenorganizerapp.viewcontrollers;
 
-import com.garden.gardenorganizerapp.Garden;
+import com.garden.gardenorganizerapp.dataobjects.Garden;
 import com.garden.gardenorganizerapp.GardenWidget;
+import com.garden.gardenorganizerapp.db.GardenDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -58,6 +59,11 @@ public class GardenGridViewController implements IViewController {
 
     public void onNewBedClick(ActionEvent actionEvent) {
 
+        garden.addPlantingArea(gardenWidget.getCurrentPlantingArea());
+        gardenWidget.newPlantingArea();
+
+        GardenDAO dao = new GardenDAO();
+        dao.store(this.garden);
     }
 
     public void onAddPlantsClick(ActionEvent actionEvent) {

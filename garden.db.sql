@@ -1,0 +1,41 @@
+BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS "Garden" (
+	"ID"	INTEGER,
+	"Name"	TEXT NOT NULL,
+	"Width"	INTEGER NOT NULL,
+	"Height"	INTEGER NOT NULL,
+	"GridSize"	INTEGER NOT NULL,
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "PlantingSpot" (
+	"ID"	INTEGER,
+	"PlantingArea_ID"	INTEGER NOT NULL,
+	"x"	INTEGER NOT NULL,
+	"y"	INTEGER NOT NULL,
+	"Color"	TEXT,
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "PlantingArea" (
+	"ID"	INTEGER,
+	"Garden_ID"	INTEGER NOT NULL,
+	PRIMARY KEY("ID" AUTOINCREMENT),
+	FOREIGN KEY("Garden_ID") REFERENCES "Garden"("ID")
+);
+CREATE TABLE IF NOT EXISTS "PlantedPlant" (
+	"ID"	INTEGER,
+	"PlantingSpot_ID"	INTEGER NOT NULL,
+	"Plant_ID"	INTEGER NOT NULL,
+	PRIMARY KEY("ID" AUTOINCREMENT),
+	FOREIGN KEY("PlantingSpot_ID") REFERENCES "PlantingSpot"("ID")
+);
+CREATE TABLE IF NOT EXISTS "Plants" (
+	"ID"	INTEGER,
+	"Name"	TEXT,
+	"DefaultColor"	INTEGER,
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);
+INSERT INTO "Garden" ("ID","Name","Width","Height","GridSize") VALUES (32,'Hallo',80,80,20);
+INSERT INTO "PlantingSpot" ("ID","PlantingArea_ID","x","y","Color") VALUES (190,1,1,1,'0x9acd32ff');
+INSERT INTO "PlantingSpot" ("ID","PlantingArea_ID","x","y","Color") VALUES (191,1,2,1,'0x9acd32ff');
+INSERT INTO "PlantingArea" ("ID","Garden_ID") VALUES (1,32);
+COMMIT;

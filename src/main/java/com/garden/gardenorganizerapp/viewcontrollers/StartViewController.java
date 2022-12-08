@@ -29,9 +29,9 @@ public class StartViewController implements IViewController {
     }
 
     @FXML
-    protected void onEditButtonClick() {
+    protected void onEditButtonClick() throws IOException {
         statusText.setText("Bestehender Garten wird aufgesucht...");
-
+        ViewLoader<SelectExistingGardenViewController> l = new ViewLoader<SelectExistingGardenViewController>("select-existing-garden-view.fxml");
     }
 
     @FXML

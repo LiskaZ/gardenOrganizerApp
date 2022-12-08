@@ -1,7 +1,8 @@
 package com.garden.gardenorganizerapp.viewcontrollers;
 
-import com.garden.gardenorganizerapp.Garden;
 import com.garden.gardenorganizerapp.ViewLoader;
+import com.garden.gardenorganizerapp.dataobjects.Garden;
+import com.garden.gardenorganizerapp.db.GardenDAO;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -66,7 +67,11 @@ public class NewGardenViewController implements IViewController{
         }
 
         ViewLoader<GardenGridViewController> l = new ViewLoader<GardenGridViewController>("garden-grid-view.fxml");
-        l.getController().setGarden(new Garden((int) width, (int) height, titleTextField.getText(), (int) gridSize, percentage));
+        Garden g = new Garden((int) width, (int) height, titleTextField.getText(), (int) gridSize, percentage);
+        l.getController().setGarden(g);
+
+        GardenDAO dao = new GardenDAO();
+        dao.store(g);
     }
 
     private int readNumber (TextField t) {
