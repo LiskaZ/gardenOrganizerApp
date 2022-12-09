@@ -23,7 +23,7 @@ public class PlantingAreaDAO {
 
     private boolean updateExistingArea(PlantingArea a) {
         DBConnection c = GardenApplication.getDBConnection();
-        String s = "UPDATE PlantingArea SET GardenId = " + a.getGardenId() + " WHERE ID = " + a.getID();
+        String s = "UPDATE PlantingArea SET Garden_ID = " + a.getGardenId() + " WHERE ID = " + a.getID();
         boolean success = false;
         if(c.query(s))
         {

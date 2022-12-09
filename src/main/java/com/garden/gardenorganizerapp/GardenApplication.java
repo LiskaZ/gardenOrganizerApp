@@ -33,3 +33,9 @@ public class GardenApplication extends Application {
         return conn;
     }
 }
+
+// TODO Gartengröße muss sich am Canvas anpassen, nicht an den Daten selbst
+
+// TODO zu viele Spots werden in DB geschrieben?
+
+// TODO Markieren nicht mehr außerhalb des Gartens möglich

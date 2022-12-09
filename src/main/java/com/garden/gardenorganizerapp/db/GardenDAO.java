@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
-public class GardenDAO {
+public class
+
+GardenDAO {
 
     public boolean store(Garden g)
     {
@@ -23,17 +25,20 @@ public class GardenDAO {
 
     private boolean updateExistingGarden(Garden g) {
         DBConnection c = GardenApplication.getDBConnection();
-        String s = "UPDATE Garden SET Name = '" + g.getName() + "', Width = " + g.getWidth() +", Height = " + g.getHeight() + ", GridSize = " + g.getGridSize() + " WHERE ID = " + g.getID() + ";";
-        if(c.query(s))
+        String sql = "UPDATE Garden SET Name = '" + g.getName() + "', Width = " + g.getWidth() +", Height = " + g.getHeight() + ", GridSize = " + g.getGridSize() + " WHERE ID = " + g.getID() + ";";
+        boolean success = false;
+
+        if(c.query(sql))
         {
+            success = true;
             PlantingAreaDAO areaDAO = new PlantingAreaDAO();
             for(PlantingArea a: g.getAreas()) {
                 a.setGardenId(g.getID());
-                areaDAO.store(a);
+                success &= areaDAO.store(a);
             }
-            return true;
+
         }
-        return false;
+        return success;
     }
 
     private boolean insertNewGarden(Garden g)

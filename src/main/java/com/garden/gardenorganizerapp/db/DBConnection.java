@@ -4,20 +4,21 @@ import java.sql.*;
 
 public class DBConnection {
 
-    public static int INVALID_ID = -1;
-    public Connection getConnection() {
+    public static final int INVALID_ID = -1;
 
-        if(null == conn)
-        {
-            connect();
-        }
-        return conn;
-    }
-
-    private Connection conn = null;
+    private Connection connection = null;
 
     public DBConnection()
     {
+    }
+
+    public Connection getConnection() {
+
+        if(null == connection)
+        {
+            connection = connect();
+        }
+        return connection;
     }
 
     public int insertQuery(String sql)
@@ -48,6 +49,8 @@ public class DBConnection {
                 {
                     res = true;
                 }
+            } else {
+                res = true;
             }
             //close();
         }
@@ -59,6 +62,7 @@ public class DBConnection {
     }
 
     private Connection connect() {
+        Connection conn = null;
         try {
             // db parameters
             String url = "jdbc:sqlite:garden.db";
@@ -73,15 +77,15 @@ public class DBConnection {
 
     public static boolean isIdValid(int id)
     {
-        return id != INVALID_ID;
+        return INVALID_ID != id;
     }
 
     private int lastInsertId()
     {
-        if(null != conn)
+        if(null != connection)
         {
             try {
-                Statement s = conn.createStatement();
+                Statement s = connection.createStatement();
                 ResultSet set = s.executeQuery("SELECT last_insert_rowid() as id;");
                 if(set.next())
                 {
@@ -98,11 +102,11 @@ public class DBConnection {
     public boolean close()
     {
         boolean res = false;
-        if(null != conn)
+        if(null != connection)
         {
             try {
-                conn.close();
-                conn = null;
+                connection.close();
+                connection = null;
             } catch (SQLException e) {
                 System.out.println(e.toString());
             }

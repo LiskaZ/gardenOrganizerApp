@@ -9,6 +9,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class GardenWidget extends Canvas {
@@ -20,6 +22,8 @@ public class GardenWidget extends Canvas {
     private Point2D currentMouseCoord = null;
 
     private PlantingArea area = null;
+
+    private Color color = Color.YELLOWGREEN;
 
     public GardenWidget(Garden garden) {
         super(garden.getWidth(), garden.getHeight());
@@ -84,7 +88,7 @@ public class GardenWidget extends Canvas {
         });
 
         if (!spotDeleted){
-            area.addSpot(new PlantingSpot(gridX, gridY, Color.YELLOWGREEN));
+            area.addSpot(new PlantingSpot(gridX, gridY, color));
         }
 
     }
@@ -111,7 +115,7 @@ public class GardenWidget extends Canvas {
         }
         for (int x = TheGarden.normalizeCoordToGrid(posStartX); x <= TheGarden.normalizeCoordToGrid(posEndX); ++x) {
             for (int y = TheGarden.normalizeCoordToGrid(posStartY); y <= TheGarden.normalizeCoordToGrid(posEndY); ++y) {
-                area.addSpot(new PlantingSpot(x, y, Color.YELLOWGREEN));
+                area.addSpot(new PlantingSpot(x, y, color));
             }
         }
     }
@@ -196,7 +200,12 @@ public class GardenWidget extends Canvas {
     }
 
     public void newPlantingArea() {
-        area = null;
+        ArrayList<Color> colors = new ArrayList(
+            List.of(Color.YELLOWGREEN, Color.ROYALBLUE, Color.ORANGE, Color.OLIVEDRAB, Color.INDIGO)
+        );
+
+        this.area = null;
+        this.color = colors.get( ( colors.indexOf(color) +1) % colors.size() );
     }
 
     public PlantingArea getCurrentPlantingArea() {

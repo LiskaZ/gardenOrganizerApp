@@ -66,12 +66,13 @@ public class NewGardenViewController implements IViewController{
             gridSize = gridSize * percentage;
         }
 
-        ViewLoader<GardenGridViewController> l = new ViewLoader<GardenGridViewController>("garden-grid-view.fxml");
         Garden g = new Garden((int) width, (int) height, titleTextField.getText(), (int) gridSize, percentage);
-        l.getController().setGarden(g);
 
         GardenDAO dao = new GardenDAO();
-        dao.store(g);
+        if (dao.store(g)) {
+            ViewLoader<GardenGridViewController> l = new ViewLoader<GardenGridViewController>("garden-grid-view.fxml");
+            l.getController().setGarden(g);
+        }
     }
 
     private int readNumber (TextField t) {
