@@ -35,7 +35,7 @@ public class SelectExistingGardenViewController implements IViewController{
         s.setScene(gardenScene);
 
         GardenDAO d = new GardenDAO();
-        Vector<Garden> gardens = d.load();
+        Vector<Garden> gardens = d.loadGardensLazy();
 
         ObservableList observableList = FXCollections.observableArrayList();
         for(Garden g: gardens) {
@@ -47,8 +47,10 @@ public class SelectExistingGardenViewController implements IViewController{
             @Override
             public void changed(ObservableValue observableValue, Garden old, Garden newObj) {
                 try {
+                    GardenDAO d = new GardenDAO();
+                    Garden garden = d.loadGarden(newObj.getID());
                     ViewLoader<GardenGridViewController> l = new ViewLoader<GardenGridViewController>("garden-grid-view.fxml");
-                    l.getController().setGarden(newObj);
+                    l.getController().setGarden(garden);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
