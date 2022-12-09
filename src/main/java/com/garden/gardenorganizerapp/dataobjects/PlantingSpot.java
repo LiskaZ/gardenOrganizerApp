@@ -5,24 +5,14 @@ import javafx.scene.paint.Color;
 
 public class PlantingSpot extends DBObject{
 
-    private Color c;
     private int x;
     private int y;
 
     private int plantingAreaId = DBConnection.INVALID_ID;
 
-    public PlantingSpot(int x, int y, Color c) {
+    public PlantingSpot(int x, int y) {
         this.x = x;
         this.y = y;
-        this.c = c;
-    }
-
-    public void setColor(Color c) {
-        this.c = c;
-    }
-
-    public Color getColor() {
-        return c;
     }
 
     public void setX(int x) {

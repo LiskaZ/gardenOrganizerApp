@@ -15,6 +15,10 @@ import java.util.Vector;
 
 public class GardenWidget extends Canvas {
 
+    private static final ArrayList<Color> COLORS = new ArrayList(
+            List.of(Color.YELLOWGREEN, Color.ROYALBLUE, Color.ORANGE, Color.OLIVEDRAB, Color.INDIGO)
+    );
+
     private Garden TheGarden;
 
     private Point2D mouseDraggingStartCoord = null;
@@ -23,7 +27,7 @@ public class GardenWidget extends Canvas {
 
     private PlantingArea area = null;
 
-    private Color color = Color.YELLOWGREEN;
+    private Color color = COLORS.get(0);
 
     public GardenWidget(Garden garden) {
         super(garden.getWidth(), garden.getHeight());
@@ -76,7 +80,7 @@ public class GardenWidget extends Canvas {
 
     private void addSingleSpotToPlantingArea(double x, double y) {
         if (area == null) {
-            area = new PlantingArea();
+            area = new PlantingArea(color);
         }
 
         Vector<PlantingSpot> spots = area.getSpots();
@@ -88,11 +92,9 @@ public class GardenWidget extends Canvas {
         });
 
         if (!spotDeleted){
-            area.addSpot(new PlantingSpot(gridX, gridY, color));
+            area.addSpot(new PlantingSpot(gridX, gridY));
         }
-
     }
-
 
     private void addSelectedSpotsToPlantingArea() {
         double posStartX = mouseDraggingStartCoord.getX();
@@ -111,11 +113,11 @@ public class GardenWidget extends Canvas {
         }
 
         if (area == null) {
-            area = new PlantingArea();
+            area = new PlantingArea(color);
         }
         for (int x = TheGarden.normalizeCoordToGrid(posStartX); x <= TheGarden.normalizeCoordToGrid(posEndX); ++x) {
             for (int y = TheGarden.normalizeCoordToGrid(posStartY); y <= TheGarden.normalizeCoordToGrid(posEndY); ++y) {
-                area.addSpot(new PlantingSpot(x, y, color));
+                area.addSpot(new PlantingSpot(x, y));
             }
         }
     }
@@ -193,19 +195,15 @@ public class GardenWidget extends Canvas {
             GraphicsContext gc = getGraphicsContext2D();
             double gSize = TheGarden.getGridSize();
             for (PlantingSpot s : area.getSpots()) {
-                gc.setFill(s.getColor());
+                gc.setFill(area.getColor());
                 gc.fillRect(s.getX() * gSize + 1, s.getY() * gSize + 1, gSize - 2, gSize - 2);
             }
         }
     }
 
     public void newPlantingArea() {
-        ArrayList<Color> colors = new ArrayList(
-            List.of(Color.YELLOWGREEN, Color.ROYALBLUE, Color.ORANGE, Color.OLIVEDRAB, Color.INDIGO)
-        );
-
         this.area = null;
-        this.color = colors.get( ( colors.indexOf(color) +1) % colors.size() );
+        this.color = COLORS.get( ( COLORS.indexOf(color) + 1) % COLORS.size() );
     }
 
     public PlantingArea getCurrentPlantingArea() {

@@ -2,7 +2,6 @@ package com.garden.gardenorganizerapp.db;
 
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
-import javafx.scene.paint.Color;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,7 +46,7 @@ public class PlantingSpotDAO implements IDAO<PlantingSpot>{
 
         PlantingSpot spot = null;
 
-        String sql = "SELECT PlantingArea_ID, x, y, Color FROM PlantingSpot WHERE ID = " + spotId + ";";
+        String sql = "SELECT PlantingArea_ID, x, y FROM PlantingSpot WHERE ID = " + spotId + ";";
         try {
             Statement s = c.getConnection().createStatement();
             ResultSet res = s.executeQuery(sql);

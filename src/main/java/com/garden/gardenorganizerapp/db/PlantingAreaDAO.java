@@ -71,7 +71,7 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
     {
         DBConnection c = GardenApplication.getDBConnection();
 
-        PlantingArea a = new PlantingArea();
+        PlantingArea a = null;
 
         String sql = "SELECT Garden_ID, Color FROM PlantingArea WHERE ID = " + areaId + ";";
         try {
@@ -80,9 +80,9 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
 
             if(res.next())
             {
+                a = new PlantingArea(Color.valueOf(res.getString("Color")));
                 a.setID(areaId);
                 a.setGardenId(res.getInt("Garden_ID"));
-                a.setColor(Color.valueOf(res.getString("Color")));
 
                 if(eager) {
                     PlantingSpotDAO dao = new PlantingSpotDAO();

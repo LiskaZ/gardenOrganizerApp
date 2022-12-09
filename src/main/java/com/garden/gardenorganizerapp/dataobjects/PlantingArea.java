@@ -1,12 +1,16 @@
 package com.garden.gardenorganizerapp.dataobjects;
 
 import com.garden.gardenorganizerapp.db.DBConnection;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 import java.util.Vector;
 
 public class PlantingArea extends DBObject{
 
     private int gardenId = DBConnection.INVALID_ID;
+
+    private Color color;
 
     public int getGardenId() {
         return gardenId;
@@ -18,8 +22,9 @@ public class PlantingArea extends DBObject{
 
     private Vector<PlantingSpot> spots;
 
-    public PlantingArea()
+    public PlantingArea(Color c)
     {
+        this.color = c;
         this.spots = new Vector<PlantingSpot>();
     }
 
@@ -39,5 +44,13 @@ public class PlantingArea extends DBObject{
 
     public void setSpots(Vector<PlantingSpot> spots) {
         this.spots = spots;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }
