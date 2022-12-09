@@ -14,10 +14,9 @@ public class
 GardenDAO {
 
     private static final boolean EAGER = true;
-    private static final boolean LAZY = !EAGER;
+    private static final boolean LAZY = false;
 
-    public boolean store(Garden g)
-    {
+    public boolean store(Garden g) {
         if(DBConnection.isIdValid(g.getID())) {
             return updateExistingGarden(g);
         }
@@ -63,26 +62,27 @@ GardenDAO {
         return success;
     }
 
-    public Vector<Garden> loadGardens()
-    {
-        return loadInternal(EAGER);
+    public Vector<Garden> loadGardens() {
+        return loadInternal(EAGER, DBConnection.INVALID_ID);
     }
 
-    public Vector<Garden> loadGardensLazy()
-    {
-        return loadInternal(LAZY);
+    public Vector<Garden> loadGardensLazy() {
+        return loadInternal(LAZY, DBConnection.INVALID_ID);
     }
 
-    private Vector<Garden> loadInternal(boolean eager)
+    private Vector<Garden> loadInternal(boolean eager, int id)
     {
         DBConnection c = GardenApplication.getDBConnection();
 
         Vector<Garden> gardens = new Vector<Garden>();
 
-        String sql = "SELECT ID, Name, Width, Height, GridSize FROM Garden;";
+        String sql = "SELECT ID, Name, Width, Height, GridSize FROM Garden";
+        if(DBConnection.isIdValid(id))
+        {
+            sql += " WHERE ID = " + id + " LIMIT 1";
+        }
         try {
-            Statement s = c.getConnection().createStatement();
-            ResultSet res = s.executeQuery(sql);
+            ResultSet res = c.selectQuery(sql);
 
             while(res.next())
             {
@@ -107,44 +107,13 @@ GardenDAO {
         return gardens;
     }
 
-    public Garden loadGarden(int gardenID)
-    {
-        return loadSingleInternal(gardenID, EAGER);
+    public Garden loadGarden(int gardenID) {
+        Vector<Garden> gardens = loadInternal(EAGER, gardenID);
+        return gardens.isEmpty() ? null : gardens.firstElement();
     }
 
-    public Garden loadGardenLazy(int gardenID)
-    {
-        return loadSingleInternal(gardenID, LAZY);
-    }
-
-    private Garden loadSingleInternal(int gardenID, boolean eager)
-    {
-        DBConnection c = GardenApplication.getDBConnection();
-        Garden garden = null;
-        String sql = "SELECT ID, Name, Width, Height, GridSize FROM Garden WHERE ID = " + gardenID + ";";
-        try {
-            Statement s = c.getConnection().createStatement();
-            ResultSet res = s.executeQuery(sql);
-
-            if(res.next()) {
-
-                garden = new Garden(
-                        res.getInt("Width"),
-                        res.getInt("Height"),
-                        res.getString("Name"),
-                        res.getInt("GridSize"),
-                        100);
-                garden.setID(res.getInt("ID"));
-
-                if(eager) {
-                    PlantingAreaDAO area = new PlantingAreaDAO();
-                    garden.setPlantingAreas(area.loadForGarden(garden.getID()));
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println(e.toString());
-        }
-
-        return garden;
+    public Garden loadGardenLazy(int gardenID) {
+        Vector<Garden> gardens = loadInternal(LAZY, DBConnection.INVALID_ID);
+        return gardens.isEmpty() ? null : gardens.firstElement();
     }
 }

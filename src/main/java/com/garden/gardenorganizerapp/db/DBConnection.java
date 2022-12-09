@@ -26,7 +26,7 @@ public class DBConnection {
         int insertId = INVALID_ID;
         try {
             Statement s = getConnection().createStatement();
-            s.execute(sql);
+            s.execute(sanitizeQuery(sql));
             if(s.getUpdateCount() > 0) {
                 insertId = lastInsertId();
             }
@@ -44,7 +44,7 @@ public class DBConnection {
         boolean res = false;
         try {
             Statement s = getConnection().createStatement();
-            if(!s.execute(sql)) {
+            if(!s.execute(sanitizeQuery(sql))) {
                 if (s.getUpdateCount() > 0)
                 {
                     res = true;
@@ -86,7 +86,7 @@ public class DBConnection {
         {
             try {
                 Statement s = connection.createStatement();
-                ResultSet set = s.executeQuery("SELECT last_insert_rowid() as id;");
+                ResultSet set = s.executeQuery(sanitizeQuery("SELECT last_insert_rowid() as id"));
                 if(set.next())
                 {
                     return set.getInt("id");
@@ -116,4 +116,27 @@ public class DBConnection {
         return res;
     }
 
+    private String sanitizeQuery(String s)
+    {
+        s = s.trim();
+        if(!s.endsWith(";"))
+        {
+            s += ";";
+        }
+
+        return s;
+    }
+
+    public ResultSet selectQuery(String sql)
+    {
+        try {
+            Statement s = getConnection().createStatement();
+            return s.executeQuery(sanitizeQuery(sql));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
