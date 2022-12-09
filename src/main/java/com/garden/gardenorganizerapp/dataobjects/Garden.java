@@ -1,8 +1,26 @@
-package com.garden.gardenorganizerapp;
+package com.garden.gardenorganizerapp.dataobjects;
+
+import com.garden.gardenorganizerapp.db.DBConnection;
 
 import java.util.Vector;
 
 public class Garden {
+
+    private int ID = DBConnection.INVALID_ID;
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getName();
+    }
 
     private int width;
 
@@ -75,6 +93,12 @@ public class Garden {
 
     public void addPlantingArea(PlantingArea area)
     {
-        areas.add(area);
+        if(null != area) {
+            areas.add(area);
+        }
+    }
+
+    public void setPlantingAreas(Vector<PlantingArea> areas) {
+        this.areas = areas;
     }
 }

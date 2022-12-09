@@ -1,5 +1,8 @@
 package com.garden.gardenorganizerapp;
 
+import com.garden.gardenorganizerapp.dataobjects.Garden;
+import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
+import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -46,9 +49,7 @@ public class GardenWidget extends Canvas {
     }
 
     public void onMouseDragged(double x, double y) {
-
         this.currentMouseCoord = new Point2D(x, y);
-
         drawGarden();
     }
 
@@ -192,5 +193,13 @@ public class GardenWidget extends Canvas {
                 gc.fillRect(s.getX() * gSize + 1, s.getY() * gSize + 1, gSize - 2, gSize - 2);
             }
         }
+    }
+
+    public void newPlantingArea() {
+        area = null;
+    }
+
+    public PlantingArea getCurrentPlantingArea() {
+        return area;
     }
 }
