@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
-public class PlantingSpotDAO {
+public class PlantingSpotDAO implements IDAO<PlantingSpot>{
 
     public boolean store(PlantingSpot s)
     {
@@ -23,7 +23,7 @@ public class PlantingSpotDAO {
 
     private boolean updateExistingSpot(PlantingSpot s) {
         DBConnection c = GardenApplication.getDBConnection();
-        String sql = "UPDATE PlantingSpot SET x = " + s.getX() + ", y = " + s.getY() + ", Color = '" + s.getColor().toString() + "' WHERE ID = " + s.getID();
+        String sql = "UPDATE PlantingSpot SET x = " + s.getX() + ", y = " + s.getY() + " WHERE ID = " + s.getID();
         if(c.query(sql))
         {
             return true;
@@ -34,7 +34,7 @@ public class PlantingSpotDAO {
     private boolean insertNewSpot(PlantingSpot s)
     {
         DBConnection c = GardenApplication.getDBConnection();
-        String sql = "INSERT INTO PlantingSpot (x, y, Color, PlantingArea_ID) VALUES (" + s.getX() + ", " + s.getY() + ", '" + s.getColor().toString() + "', " + s.getPlantingAreaId() +");";
+        String sql = "INSERT INTO PlantingSpot (x, y, PlantingArea_ID) VALUES (" + s.getX() + ", " + s.getY() + ", " + s.getPlantingAreaId() +");";
 
         int id = c.insertQuery(sql);
         s.setID(id);
@@ -54,7 +54,7 @@ public class PlantingSpotDAO {
 
             if(res.next())
             {
-                spot = new PlantingSpot(res.getInt("x"), res.getInt("y"), Color.valueOf(res.getString("Color")));
+                spot = new PlantingSpot(res.getInt("x"), res.getInt("y"));
                 spot.setPlantingAreaId(res.getInt("PlantingArea_ID"));
                 spot.setID(spotId);
             }
@@ -63,6 +63,11 @@ public class PlantingSpotDAO {
         }
 
         return spot;
+    }
+
+    public PlantingSpot loadLazy(int spotId)
+    {
+        return load(spotId);
     }
 
     public Vector<PlantingSpot> loadForArea(int areaId)

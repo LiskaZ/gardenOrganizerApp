@@ -9,12 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
-public class
-
-GardenDAO {
-
-    private static final boolean EAGER = true;
-    private static final boolean LAZY = false;
+public class GardenDAO implements IAllDAO<Garden>{
 
     public boolean store(Garden g) {
         if(DBConnection.isIdValid(g.getID())) {
@@ -62,11 +57,11 @@ GardenDAO {
         return success;
     }
 
-    public Vector<Garden> loadGardens() {
+    public Vector<Garden> loadAll() {
         return loadInternal(EAGER, DBConnection.INVALID_ID);
     }
 
-    public Vector<Garden> loadGardensLazy() {
+    public Vector<Garden> loadAllLazy() {
         return loadInternal(LAZY, DBConnection.INVALID_ID);
     }
 
@@ -107,12 +102,12 @@ GardenDAO {
         return gardens;
     }
 
-    public Garden loadGarden(int gardenID) {
+    public Garden load(int gardenID) {
         Vector<Garden> gardens = loadInternal(EAGER, gardenID);
         return gardens.isEmpty() ? null : gardens.firstElement();
     }
 
-    public Garden loadGardenLazy(int gardenID) {
+    public Garden loadLazy(int gardenID) {
         Vector<Garden> gardens = loadInternal(LAZY, DBConnection.INVALID_ID);
         return gardens.isEmpty() ? null : gardens.firstElement();
     }
