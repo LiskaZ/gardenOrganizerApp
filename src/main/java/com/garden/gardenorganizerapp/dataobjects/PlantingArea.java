@@ -4,9 +4,7 @@ import com.garden.gardenorganizerapp.db.DBConnection;
 
 import java.util.Vector;
 
-public class PlantingArea {
-
-    private int ID = DBConnection.INVALID_ID;
+public class PlantingArea extends DBObject{
 
     private int gardenId = DBConnection.INVALID_ID;
 
@@ -18,13 +16,6 @@ public class PlantingArea {
         this.gardenId = gardenId;
     }
 
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
     private Vector<PlantingSpot> spots;
 
     public PlantingArea()

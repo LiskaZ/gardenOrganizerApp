@@ -3,9 +3,7 @@ package com.garden.gardenorganizerapp.dataobjects;
 import com.garden.gardenorganizerapp.db.DBConnection;
 import javafx.scene.paint.Color;
 
-public class PlantingSpot {
-
-    private int ID = DBConnection.INVALID_ID;
+public class PlantingSpot extends DBObject{
 
     private Color c;
     private int x;
@@ -17,14 +15,6 @@ public class PlantingSpot {
         this.x = x;
         this.y = y;
         this.c = c;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
-
-    public int getID() {
-        return ID;
     }
 
     public void setColor(Color c) {
