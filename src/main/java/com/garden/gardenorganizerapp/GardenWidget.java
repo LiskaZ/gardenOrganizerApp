@@ -68,9 +68,19 @@ public class GardenWidget extends Canvas {
         drawGarden();
     }
 
+    // TODO write changes to DB
     public void onMouseClicked(double x, double y) {
         if (isAllowedToHandleClick()) {
-            addSingleSpotToPlantingArea(x, y);
+            Point2D gridCoords = toGridCoords(x, y);
+            PlantingArea containingArea = getAreaContainingSpotCoords(gridCoords);
+            if(containingArea != null)
+            {
+                containingArea.removeSpot(gridCoords);
+            }
+            else
+            {
+                addSingleSpotToPlantingArea(gridCoords);
+            }
         } else {
             enableHandleClick();
         }
@@ -78,22 +88,39 @@ public class GardenWidget extends Canvas {
         drawGarden();
     }
 
-    private void addSingleSpotToPlantingArea(double x, double y) {
+    private PlantingArea getAreaContainingSpotCoords(Point2D gridCoords) {
+        PlantingArea area = null;
+        for(PlantingArea a: TheGarden.getAreas())
+        {
+            if(a.containsSpotAt(gridCoords))
+            {
+                area = a;
+                break;
+            }
+        }
+// TODO refactor!!!!
+        if(null == area && null != this.area)
+        {
+            if(this.area.containsSpotAt(gridCoords))
+            {
+                area = this.area;
+            }
+        }
+
+        return area;
+    }
+
+    private Point2D toGridCoords(double x, double y)
+    {
+        return new Point2D(TheGarden.normalizeCoordToGrid(x), TheGarden.normalizeCoordToGrid(y));
+    }
+
+    private void addSingleSpotToPlantingArea(Point2D coord) {
         if (area == null) {
             area = new PlantingArea(color);
         }
 
-        Vector<PlantingSpot> spots = area.getSpots();
-
-        int gridX = TheGarden.normalizeCoordToGrid(x);
-        int gridY = TheGarden.normalizeCoordToGrid(y);
-        boolean spotDeleted = spots.removeIf(spot -> {
-            return spot.getX() == gridX && spot.getY() == gridY;
-        });
-
-        if (!spotDeleted){
-            area.addSpot(new PlantingSpot(gridX, gridY));
-        }
+        area.addSpot(coord);
     }
 
     private void addSelectedSpotsToPlantingArea() {
