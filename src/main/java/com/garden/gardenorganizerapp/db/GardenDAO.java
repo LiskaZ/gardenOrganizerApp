@@ -6,7 +6,6 @@ import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Vector;
 
 public class GardenDAO implements IAllDAO<Garden>{
@@ -96,7 +95,7 @@ public class GardenDAO implements IAllDAO<Garden>{
                 gardens.add(g);
             }
         } catch (SQLException e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         return gardens;

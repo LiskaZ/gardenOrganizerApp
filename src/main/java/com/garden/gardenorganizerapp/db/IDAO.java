@@ -1,7 +1,5 @@
 package com.garden.gardenorganizerapp.db;
 
-import java.util.Vector;
-
 public interface IDAO<T> {
 
     static final boolean EAGER = true;

@@ -73,7 +73,7 @@ public class DBConnection {
             //close();
         }
         catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
 
         return res;
@@ -87,7 +87,7 @@ public class DBConnection {
             // create a connection to the database
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         return conn;
@@ -110,7 +110,7 @@ public class DBConnection {
                     return set.getInt("id");
                 }
             } catch (SQLException e) {
-                System.out.println(e.toString());
+                e.printStackTrace();
             }
         }
 
@@ -126,7 +126,7 @@ public class DBConnection {
                 connection.close();
                 connection = null;
             } catch (SQLException e) {
-                System.out.println(e.toString());
+                e.printStackTrace();
             }
             res = true;
         }

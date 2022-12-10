@@ -3,7 +3,6 @@ package com.garden.gardenorganizerapp.db;
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
 import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
-import javafx.scene.paint.Color;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +23,7 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
 
     private boolean updateExistingArea(PlantingArea a) {
         DBConnection c = GardenApplication.getDBConnection();
-        String s = "UPDATE PlantingArea SET Garden_ID = " + a.getGardenId() + ", Color = '" + a.getColor() + "' WHERE ID = " + a.getID();
+        String s = "UPDATE PlantingArea SET Garden_ID = " + a.getGardenId() + ", Item_ID = '" + a.getItemID() + "' WHERE ID = " + a.getID();
         boolean success = false;
         if(c.query(s))
         {
@@ -41,7 +40,7 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
     private boolean insertNewArea(PlantingArea a)
     {
         DBConnection c = GardenApplication.getDBConnection();
-        String sql = "INSERT INTO PlantingArea (Garden_ID, Color) VALUES (" + a.getGardenId() + ", '" + a.getColor() +"');";
+        String sql = "INSERT INTO PlantingArea (Garden_ID, Item_ID) VALUES (" + a.getGardenId() + ", '" + a.getItemID() +"');";
         int id = c.insertQuery(sql);
         boolean success = false;
         if(DBConnection.isIdValid(id))
@@ -73,14 +72,14 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
 
         PlantingArea a = null;
 
-        String sql = "SELECT Garden_ID, Color FROM PlantingArea WHERE ID = " + areaId + ";";
+        String sql = "SELECT Garden_ID, Item_ID FROM PlantingArea WHERE ID = " + areaId + ";";
         try {
             Statement s = c.getConnection().createStatement();
             ResultSet res = s.executeQuery(sql);
 
             if(res.next())
             {
-                a = new PlantingArea(Color.valueOf(res.getString("Color")));
+                a = new PlantingArea(res.getInt("Item_ID"));
                 a.setID(areaId);
                 a.setGardenId(res.getInt("Garden_ID"));
 
@@ -90,7 +89,7 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         return a;
@@ -112,7 +111,7 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
                 areas.add(load(res.getInt("ID")));
             }
         } catch (SQLException e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         return areas;

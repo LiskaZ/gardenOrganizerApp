@@ -68,7 +68,7 @@ public class PlantingSpotDAO implements IDAO<PlantingSpot>{
                 spot.setID(spotId);
             }
         } catch (SQLException e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         return spot;
@@ -95,7 +95,7 @@ public class PlantingSpotDAO implements IDAO<PlantingSpot>{
                 spots.add(load(res.getInt("ID")));
             }
         } catch (SQLException e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         return spots;

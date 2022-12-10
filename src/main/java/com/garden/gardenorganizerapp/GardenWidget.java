@@ -1,6 +1,7 @@
 package com.garden.gardenorganizerapp;
 
 import com.garden.gardenorganizerapp.dataobjects.Garden;
+import com.garden.gardenorganizerapp.dataobjects.Item;
 import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
 import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
 import com.garden.gardenorganizerapp.viewcontrollers.GardenGridViewController;
@@ -12,7 +13,6 @@ import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class GardenWidget extends Canvas {
 
@@ -28,29 +28,43 @@ public class GardenWidget extends Canvas {
 
     private PlantingArea area = null;
 
-    private Color color = COLORS.get(0);
+    public void setTheGarden(Garden theGarden) {
+        TheGarden = theGarden;
+    }
 
-    private GardenGridViewController controler;
+    public void setArea(PlantingArea area) {
+        this.area = area;
+    }
+
+    public void setItem(Item item) {
+        if (this.item == null && item != null){
+            setOnMouseClicked(e -> {
+                onMouseClicked(e.getX(), e.getY());
+            });
+
+            setOnMousePressed(e -> {
+                onMousePressed(e.getX(), e.getY());
+            });
+
+            setOnMouseDragged(e -> {
+                onMouseDragged(e.getX(), e.getY());
+            });
+
+            setOnMouseReleased(e -> {
+                onMouseReleased(e.getX(), e.getY());
+            });
+        }
+
+        this.item = item;
+    }
+
+    private Item item = null;
+
+    private GardenGridViewController controller;
 
     public GardenWidget(Garden garden) {
         super(garden.getWidth(), garden.getHeight());
         this.TheGarden = garden;
-
-        setOnMouseClicked(e -> {
-            onMouseClicked(e.getX(), e.getY());
-        });
-
-        setOnMousePressed(e -> {
-            onMousePressed(e.getX(), e.getY());
-        });
-
-        setOnMouseDragged(e -> {
-            onMouseDragged(e.getX(), e.getY());
-        });
-
-        setOnMouseReleased(e -> {
-            onMouseReleased(e.getX(), e.getY());
-        });
 
         drawGarden();
     }
@@ -70,20 +84,15 @@ public class GardenWidget extends Canvas {
         }
         drawGarden();
     }
-
-    // TODO write changes to DB
+// TODO Sobald Area ohne Spots, muss Area gelöscht werden
     public void onMouseClicked(double x, double y) {
         if (isAllowedToHandleClick()) {
             Point2D gridCoords = toGridCoords(x, y);
             PlantingArea containingArea = getAreaContainingSpotCoords(gridCoords);
-            if(containingArea != null)
-            {
-                if(containingArea.removeSpot(gridCoords)) {
-                    controler.removeSpotFromDB(containingArea.getID(), new PlantingSpot(TheGarden.normalizeCoordToGrid(x), TheGarden.normalizeCoordToGrid(y)));
-                };
-            }
-            else
-            {
+            if (containingArea != null && containingArea.removeSpot(gridCoords)) {
+                controller.removeSpotFromDB(containingArea.getID(), new PlantingSpot(TheGarden.normalizeCoordToGrid(x), TheGarden.normalizeCoordToGrid(y)));
+
+            } else {
                 addSingleSpotToPlantingArea(gridCoords);
             }
         } else {
@@ -95,34 +104,26 @@ public class GardenWidget extends Canvas {
 
     private PlantingArea getAreaContainingSpotCoords(Point2D gridCoords) {
         PlantingArea area = null;
-        for(PlantingArea a: TheGarden.getAreas())
-        {
-            if(a.containsSpotAt(gridCoords))
-            {
+        for (PlantingArea a : TheGarden.getAreas()) {
+            if (a.containsSpotAt(gridCoords)) {
                 area = a;
                 break;
             }
         }
-// TODO refactor!!!!
-        if(null == area && null != this.area)
-        {
-            if(this.area.containsSpotAt(gridCoords))
-            {
-                area = this.area;
-            }
+        if (null == area && null != this.area && this.area.containsSpotAt(gridCoords)) {
+            area = this.area;
         }
 
         return area;
     }
 
-    private Point2D toGridCoords(double x, double y)
-    {
+    private Point2D toGridCoords(double x, double y) {
         return new Point2D(TheGarden.normalizeCoordToGrid(x), TheGarden.normalizeCoordToGrid(y));
     }
 
     private void addSingleSpotToPlantingArea(Point2D coord) {
         if (area == null) {
-            area = new PlantingArea(color);
+            area = new PlantingArea(item.getItemId());
         }
 
         area.addSpot(coord);
@@ -145,7 +146,7 @@ public class GardenWidget extends Canvas {
         }
 
         if (area == null) {
-            area = new PlantingArea(color);
+            area = new PlantingArea(item.getItemId());
         }
         for (int x = TheGarden.normalizeCoordToGrid(posStartX); x <= TheGarden.normalizeCoordToGrid(posEndX); ++x) {
             for (int y = TheGarden.normalizeCoordToGrid(posStartY); y <= TheGarden.normalizeCoordToGrid(posEndY); ++y) {
@@ -227,7 +228,9 @@ public class GardenWidget extends Canvas {
             GraphicsContext gc = getGraphicsContext2D();
             double gSize = TheGarden.getGridSize();
             for (PlantingSpot s : area.getSpots()) {
-                gc.setFill(area.getColor());
+                // TODO Hier muss Liste aller Items geladen werden?
+//                Item item = items.getOne(area.getItemID()).getColor();
+                gc.setFill(Color.YELLOWGREEN);
                 gc.fillRect(s.getX() * gSize + 1, s.getY() * gSize + 1, gSize - 2, gSize - 2);
             }
         }
@@ -235,14 +238,14 @@ public class GardenWidget extends Canvas {
 
     public void newPlantingArea() {
         this.area = null;
-        this.color = COLORS.get( ( COLORS.indexOf(color) + 1) % COLORS.size() );
+//        this.color = COLORS.get((COLORS.indexOf(item) + 1) % COLORS.size());
     }
 
     public PlantingArea getCurrentPlantingArea() {
         return area;
     }
 
-    public void setControler(GardenGridViewController gardenGridViewController) {
-        this.controler = gardenGridViewController;
+    public void setController(GardenGridViewController gardenGridViewController) {
+        this.controller = gardenGridViewController;
     }
 }

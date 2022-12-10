@@ -2,15 +2,18 @@ package com.garden.gardenorganizerapp.viewcontrollers;
 
 import com.garden.gardenorganizerapp.dataobjects.Garden;
 import com.garden.gardenorganizerapp.GardenWidget;
-import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
+import com.garden.gardenorganizerapp.dataobjects.Item;
 import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
 import com.garden.gardenorganizerapp.db.GardenDAO;
 import com.garden.gardenorganizerapp.db.PlantingSpotDAO;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -37,10 +40,13 @@ public class GardenGridViewController implements IViewController {
     @FXML
     private MenuBar menuBar;
 
-    public GardenGridViewController() throws IOException
-    {
+    @FXML
+    private ListView itemList;
 
-    }
+    @FXML
+    Button newBed;
+
+    public GardenGridViewController() throws IOException {}
 
     public void createScene(Parent gardenSettingsLayer, Stage s, int sceneSize)
     {
@@ -49,13 +55,25 @@ public class GardenGridViewController implements IViewController {
         this.gardenScene = new Scene(this.gardenSettingsLayer, sceneSize, sceneSize);
         s.setScene(gardenScene);
         createMenu(menuBar);
+        createItemList();
+    }
+
+    private void createItemList() {
+        ObservableList<String> items = FXCollections.observableArrayList("Tomate", "Gurke", "Zucchini", "Kürbis", "Karotten", "Steine", "Gras");
+        itemList.setItems(items);
+
+        itemList.getSelectionModel().selectedItemProperty().addListener(x -> {
+            String selectedItem = (String) itemList.getSelectionModel().getSelectedItem();
+            gardenWidget.setItem(new Item(selectedItem, Color.INDIGO));
+        });
+
     }
 
     public void setGarden(Garden garden)
     {
         this.garden = garden;
         gardenWidget = new GardenWidget(this.garden);
-        gardenWidget.setControler(this);
+        gardenWidget.setController(this);
         createGardenLayer();
     }
 
@@ -71,7 +89,6 @@ public class GardenGridViewController implements IViewController {
 
         garden.addPlantingArea(gardenWidget.getCurrentPlantingArea());
         gardenWidget.newPlantingArea();
-
         GardenDAO dao = new GardenDAO();
         dao.store(this.garden);
     }
