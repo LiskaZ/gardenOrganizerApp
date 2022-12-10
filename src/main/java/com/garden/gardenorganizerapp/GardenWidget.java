@@ -3,6 +3,7 @@ package com.garden.gardenorganizerapp;
 import com.garden.gardenorganizerapp.dataobjects.Garden;
 import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
 import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
+import com.garden.gardenorganizerapp.viewcontrollers.GardenGridViewController;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -28,6 +29,8 @@ public class GardenWidget extends Canvas {
     private PlantingArea area = null;
 
     private Color color = COLORS.get(0);
+
+    private GardenGridViewController controler;
 
     public GardenWidget(Garden garden) {
         super(garden.getWidth(), garden.getHeight());
@@ -75,7 +78,9 @@ public class GardenWidget extends Canvas {
             PlantingArea containingArea = getAreaContainingSpotCoords(gridCoords);
             if(containingArea != null)
             {
-                containingArea.removeSpot(gridCoords);
+                if(containingArea.removeSpot(gridCoords)) {
+                    controler.removeSpotFromDB(containingArea.getID(), new PlantingSpot(TheGarden.normalizeCoordToGrid(x), TheGarden.normalizeCoordToGrid(y)));
+                };
             }
             else
             {
@@ -235,5 +240,9 @@ public class GardenWidget extends Canvas {
 
     public PlantingArea getCurrentPlantingArea() {
         return area;
+    }
+
+    public void setControler(GardenGridViewController gardenGridViewController) {
+        this.controler = gardenGridViewController;
     }
 }

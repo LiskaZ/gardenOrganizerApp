@@ -39,6 +39,24 @@ public class DBConnection {
         return insertId;
     }
 
+    public int deleteQuery(String sql)
+    {
+        int deleteId = INVALID_ID;
+        try {
+            Statement s = getConnection().createStatement();
+            s.execute(sanitizeQuery(sql));
+            if(s.getUpdateCount() > 0) {
+                deleteId = lastInsertId();
+            }
+            //close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return deleteId;
+    }
+
     public boolean query(String sql)
     {
         boolean res = false;

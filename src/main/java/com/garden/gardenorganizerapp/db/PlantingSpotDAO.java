@@ -40,6 +40,16 @@ public class PlantingSpotDAO implements IDAO<PlantingSpot>{
         return c.isIdValid(id);
     }
 
+    public boolean removeSpot(int areaID, PlantingSpot s)
+    {
+        DBConnection c = GardenApplication.getDBConnection();
+        String sql = "DELETE FROM PlantingSpot WHERE PlantingArea_ID = " + areaID + " and  x = " + s.getX() + " and y = " + s.getY() +";";
+
+        int id = c.deleteQuery(sql);
+        s.setID(id);
+        return c.isIdValid(id);
+    }
+
     public PlantingSpot load(int spotId)
     {
         DBConnection c = GardenApplication.getDBConnection();

@@ -2,9 +2,13 @@ package com.garden.gardenorganizerapp.viewcontrollers;
 
 import com.garden.gardenorganizerapp.dataobjects.Garden;
 import com.garden.gardenorganizerapp.GardenWidget;
+import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
+import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
 import com.garden.gardenorganizerapp.db.GardenDAO;
+import com.garden.gardenorganizerapp.db.PlantingSpotDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
@@ -51,6 +55,7 @@ public class GardenGridViewController implements IViewController {
     {
         this.garden = garden;
         gardenWidget = new GardenWidget(this.garden);
+        gardenWidget.setControler(this);
         createGardenLayer();
     }
 
@@ -72,5 +77,10 @@ public class GardenGridViewController implements IViewController {
     }
 
     public void onAddPlantsClick(ActionEvent actionEvent) {
+    }
+
+    public void removeSpotFromDB(int areaID, PlantingSpot gridCoords) {
+        PlantingSpotDAO dao = new PlantingSpotDAO();
+        dao.removeSpot(areaID, gridCoords);
     }
 }
