@@ -1,40 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<BorderPane style="-fx-background-color: green;" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.garden.gardenorganizerapp.viewcontrollers.GardenGridViewController">
+
+<BorderPane style="-fx-background-color: green;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.2" fx:controller="com.garden.gardenorganizerapp.viewcontrollers.GardenGridViewController">
     <top>
-        <MenuBar fx:id="menuBar" >
-            <Menu fx:id="menuStart" text="Start">
-                <MenuItem fx:id="newGarden" text="Neuer Garten" ></MenuItem>
-                <MenuItem fx:id="loadGarden" text="Garten laden"></MenuItem>
-                <MenuItem fx:id="saveGarden" text="Garten speichern"></MenuItem>
-                <MenuItem fx:id="closeGardenApp" text="Garten verlassen"></MenuItem>
-            </Menu>
-            <Menu fx:id="menuGardenHelpers" text="Gartenhelfer">
-                <MenuItem fx:id="countPlants" text="Pflanzenübersicht"></MenuItem>
-                <MenuItem fx:id="calendar" text="Kalender"></MenuItem>
-                <MenuItem fx:id="getHelp" text="Hilfe"></MenuItem>
-            </Menu>
-        </MenuBar>
+        <MenuBar fx:id="menuBar"></MenuBar>
     </top>
     <center>
-        <VBox alignment="CENTER" spacing="0" style="-fx-background-color: green;" fx:id="gardenCanvas">
-
-        </VBox>
+        <VBox fx:id="gardenCanvas" alignment="CENTER" prefHeight="600.0" prefWidth="600.0" spacing="0">
+         <padding>
+            <Insets top="5.0" />
+         </padding></VBox>
     </center>
     <bottom>
         <HBox alignment="CENTER" spacing="5.0">
             <padding>
-                <Insets bottom="5.0"/>
+                <Insets bottom="5.0" />
             </padding>
-            <Button id="newBed" fx:id="newBed" text="Neues Beet anlegen" onAction="#onNewBedClick" prefWidth="150" />
-            <Button id="addPlants" fx:id="addPlants" text="Pflanzen setzen" onAction="#onAddPlantsClick" prefWidth="150" />
+            <Button id="newBed" fx:id="newBed" onAction="#onNewBedClick" prefWidth="150" text="Neues Beet anlegen" />
+            <Button id="addPlants" fx:id="addPlants" onAction="#onAddPlantsClick" prefWidth="150" text="Pflanzen setzen" />
         </HBox>
     </bottom>
-
 </BorderPane>

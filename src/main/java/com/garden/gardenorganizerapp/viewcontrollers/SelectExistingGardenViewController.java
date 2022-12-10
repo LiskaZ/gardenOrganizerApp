@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuBar;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,6 +26,9 @@ public class SelectExistingGardenViewController implements IViewController{
     @FXML
     private ListView gardenList;
 
+    @FXML
+    private MenuBar menuBar;
+
     public SelectExistingGardenViewController() throws IOException {
 
     }
@@ -33,6 +37,7 @@ public class SelectExistingGardenViewController implements IViewController{
         this.sceneSize = sceneSize;
         this.gardenScene = new Scene(p, sceneSize, sceneSize);
         s.setScene(gardenScene);
+        createMenu(menuBar);
 
         GardenDAO d = new GardenDAO();
         Vector<Garden> gardens = d.loadAllLazy();

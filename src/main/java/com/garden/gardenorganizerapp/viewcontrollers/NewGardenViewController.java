@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -17,6 +18,9 @@ import static java.lang.Integer.parseInt;
 public class NewGardenViewController implements IViewController{
 
     private Scene gardenScene;
+
+    @FXML
+    private MenuBar menuBar;
 
     @FXML
     private TextField titleTextField;
@@ -35,14 +39,13 @@ public class NewGardenViewController implements IViewController{
 
     private int sceneSize;
 
-    public NewGardenViewController() throws IOException {
-
-    }
+    public NewGardenViewController() {}
 
     public void createScene(Parent p, Stage s, int sceneSize)
     {
         this.sceneSize = sceneSize;
         this.gardenScene = new Scene(p, sceneSize, sceneSize);
+        createMenu(menuBar);
         s.setScene(gardenScene);
     }
     public void onCreateGardenButtonClick() throws IOException {
@@ -70,7 +73,7 @@ public class NewGardenViewController implements IViewController{
 
         GardenDAO dao = new GardenDAO();
         if (dao.store(g)) {
-            ViewLoader<GardenGridViewController> l = new ViewLoader<GardenGridViewController>("garden-grid-view.fxml");
+            ViewLoader<GardenGridViewController> l = new ViewLoader<>("garden-grid-view.fxml");
             l.getController().setGarden(g);
         }
     }

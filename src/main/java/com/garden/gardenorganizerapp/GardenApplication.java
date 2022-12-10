@@ -37,3 +37,7 @@ public class GardenApplication extends Application {
 // TODO Gartengröße muss sich am Canvas anpassen, nicht an den Daten selbst
 
 // TODO Markieren nicht mehr außerhalb des Gartens möglich
+
+// TODO scaling nicht immer angewandt
+
+// TODO remove spots from overlapping area definition

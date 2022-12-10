@@ -3,17 +3,25 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<VBox alignment="CENTER" spacing="5.0" style="-fx-background-color: green;" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.garden.gardenorganizerapp.viewcontrollers.NewGardenViewController">
-    <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-    </padding>
+<?import javafx.scene.layout.BorderPane?>
 
-    <TextField fx:id="titleTextField" promptText="Gartenname eingeben" maxWidth="300"/>
-    <TextField fx:id="widthIntegerField" promptText="Gesamtbreite des Gartens in cm" maxWidth="300"/>
-    <TextField fx:id="heightIntegerField" promptText="Gesamtlänge des Gartens in cm" maxWidth="300"/>
-    <TextField fx:id="gridSizeIntegerField" promptText="Rastergröße" maxWidth="300" text="20" />
+<BorderPane style="-fx-background-color: green;" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.garden.gardenorganizerapp.viewcontrollers.NewGardenViewController">
+    <top>
+        <MenuBar fx:id="menuBar"/>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="5.0">
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
 
-    <Button fx:id="createGarden" text="Garten erstellen" onAction="#onCreateGardenButtonClick"/>
-</VBox>
+            <TextField fx:id="titleTextField" promptText="Gartenname eingeben" maxWidth="300"/>
+            <TextField fx:id="widthIntegerField" promptText="Gesamtbreite des Gartens in cm" maxWidth="300"/>
+            <TextField fx:id="heightIntegerField" promptText="Gesamtlänge des Gartens in cm" maxWidth="300"/>
+            <TextField fx:id="gridSizeIntegerField" promptText="Rastergröße" maxWidth="300" text="20" />
+
+            <Button fx:id="createGarden" text="Garten erstellen" onAction="#onCreateGardenButtonClick"/>
+        </VBox>
+    </center>
+</BorderPane>

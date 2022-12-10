@@ -4,11 +4,11 @@ import com.garden.gardenorganizerapp.ViewLoader;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Collection;
 
 public class StartViewController implements IViewController {
     @FXML
@@ -17,10 +17,10 @@ public class StartViewController implements IViewController {
     @FXML
     private Button stopButton;
 
-    public StartViewController()
-    {
+    @FXML
+    private MenuBar menuBar;
 
-    }
+    public StartViewController() {}
 
     @FXML
     protected void onNewButtonClick() throws IOException {
@@ -45,6 +45,7 @@ public class StartViewController implements IViewController {
     @Override
     public void createScene(Parent p, Stage s, int sceneSize) {
         Scene scene = new Scene(p, sceneSize, sceneSize);
+        createMenu(menuBar);
         s.setTitle("New Garden");
         s.setScene(scene);
         s.show();

@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -29,6 +30,9 @@ public class GardenGridViewController implements IViewController {
 
     private Stage stage;
 
+    @FXML
+    private MenuBar menuBar;
+
     public GardenGridViewController() throws IOException
     {
 
@@ -40,6 +44,7 @@ public class GardenGridViewController implements IViewController {
         this.gardenSettingsLayer = (BorderPane) gardenSettingsLayer;
         this.gardenScene = new Scene(this.gardenSettingsLayer, sceneSize, sceneSize);
         s.setScene(gardenScene);
+        createMenu(menuBar);
     }
 
     public void setGarden(Garden garden)
