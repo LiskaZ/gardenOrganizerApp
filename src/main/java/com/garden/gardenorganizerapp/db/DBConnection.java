@@ -152,6 +152,7 @@ public class DBConnection {
             return s.executeQuery(sanitizeQuery(sql));
         }
         catch (SQLException e) {
+            System.err.println(String.format("During Query :\"%s\"", sql));
             e.printStackTrace();
         }
 

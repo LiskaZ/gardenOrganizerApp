@@ -1,6 +1,7 @@
 package com.garden.gardenorganizerapp;
 
 import com.garden.gardenorganizerapp.db.DBConnection;
+import com.garden.gardenorganizerapp.db.VarietyDAO;
 import com.garden.gardenorganizerapp.viewcontrollers.StartViewController;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -17,6 +18,11 @@ public class GardenApplication extends Application {
     public void start(Stage stage) throws IOException {
         THE_STAGE = stage;
         new ViewLoader<StartViewController>("start-view.fxml");
+
+        VarietyDAO dao = new VarietyDAO();
+        for(var v: dao.loadAll()) {
+            System.out.println(v.getID() + ": " + v.getName() + "\t Color: " + v.getDefaultColor().toString());
+        }
     }
 
     public static void main(String[] args) {
