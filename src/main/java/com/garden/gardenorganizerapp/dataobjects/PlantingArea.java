@@ -9,21 +9,27 @@ public class PlantingArea extends DBObject {
 
     private int gardenId = DBConnection.INVALID_ID;
 
-    public int getItemID() {
-        return itemID;
+    public Item getItem() {
+        return item;
     }
 
-    public void setItemID(int itemID) {
-        this.itemID = itemID;
+    public void setItem(Item item) {
+        if(item != null) {
+            this.item = item;
+        }
     }
 
-    private int itemID;
+    private Item item;
 
     private Vector<PlantingSpot> spots;
 
-    public PlantingArea(int itemID) {
-        this.itemID = itemID;
+    public PlantingArea() {
         this.spots = new Vector<>();
+    }
+
+    public PlantingArea(Item item) {
+        this();
+        this.item = item;
     }
 
     public void setGardenId(int gardenId) {
@@ -55,7 +61,6 @@ public class PlantingArea extends DBObject {
     }
 
     public boolean removeSpot(Point2D coord) {
-        boolean spotRemoved = this.spots.removeIf(spot -> spot.getX() == coord.getX() && spot.getY() == coord.getY());
-        return spotRemoved;
+        return this.spots.removeIf(spot -> spot.getX() == coord.getX() && spot.getY() == coord.getY());
     }
 }

@@ -11,6 +11,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class GardenWidget extends Canvas {
 
     private Point2D currentMouseCoord = null;
 
-    private PlantingArea area = null;
+    private PlantingArea area = new PlantingArea();
 
     public void setTheGarden(Garden theGarden) {
         TheGarden = theGarden;
@@ -37,7 +38,7 @@ public class GardenWidget extends Canvas {
     }
 
     public void setItem(Item item) {
-        if (this.item == null && item != null){
+        if (this.area.getItem() == null && item != null){
             setOnMouseClicked(e -> {
                 onMouseClicked(e.getX(), e.getY());
             });
@@ -54,11 +55,8 @@ public class GardenWidget extends Canvas {
                 onMouseReleased(e.getX(), e.getY());
             });
         }
-
-        this.item = item;
+        this.area.setItem(item);
     }
-
-    private Item item = null;
 
     private GardenGridViewController controller;
 
@@ -84,7 +82,7 @@ public class GardenWidget extends Canvas {
         }
         drawGarden();
     }
-// TODO Sobald Area ohne Spots, muss Area gelöscht werden
+// TODO Sobald Area ohne Spots, muss Area archiviert werden
     public void onMouseClicked(double x, double y) {
         if (isAllowedToHandleClick()) {
             Point2D gridCoords = toGridCoords(x, y);
@@ -110,7 +108,7 @@ public class GardenWidget extends Canvas {
                 break;
             }
         }
-        if (null == area && null != this.area && this.area.containsSpotAt(gridCoords)) {
+        if (null == area && this.area.containsSpotAt(gridCoords)) {
             area = this.area;
         }
 
@@ -122,10 +120,6 @@ public class GardenWidget extends Canvas {
     }
 
     private void addSingleSpotToPlantingArea(Point2D coord) {
-        if (area == null) {
-            area = new PlantingArea(item.getItemId());
-        }
-
         area.addSpot(coord);
     }
 
@@ -145,9 +139,6 @@ public class GardenWidget extends Canvas {
             posEndY = mouseDraggingStartCoord.getY();
         }
 
-        if (area == null) {
-            area = new PlantingArea(item.getItemId());
-        }
         for (int x = TheGarden.normalizeCoordToGrid(posStartX); x <= TheGarden.normalizeCoordToGrid(posEndX); ++x) {
             for (int y = TheGarden.normalizeCoordToGrid(posStartY); y <= TheGarden.normalizeCoordToGrid(posEndY); ++y) {
                 area.addSpot(new PlantingSpot(x, y));
@@ -237,7 +228,7 @@ public class GardenWidget extends Canvas {
     }
 
     public void newPlantingArea() {
-        this.area = null;
+        this.area = new PlantingArea();
 //        this.color = COLORS.get((COLORS.indexOf(item) + 1) % COLORS.size());
     }
 
@@ -249,3 +240,5 @@ public class GardenWidget extends Canvas {
         this.controller = gardenGridViewController;
     }
 }
+
+// TODO Items richtig integrieren

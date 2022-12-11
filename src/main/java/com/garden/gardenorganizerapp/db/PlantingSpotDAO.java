@@ -6,6 +6,7 @@ import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.Vector;
 
 public class PlantingSpotDAO implements IDAO<PlantingSpot>{
@@ -33,7 +34,7 @@ public class PlantingSpotDAO implements IDAO<PlantingSpot>{
     private boolean insertNewSpot(PlantingSpot s)
     {
         DBConnection c = GardenApplication.getDBConnection();
-        String sql = "INSERT INTO PlantingSpot (x, y, PlantingArea_ID) VALUES (" + s.getX() + ", " + s.getY() + ", " + s.getPlantingAreaId() +");";
+        String sql = "INSERT INTO PlantingSpot (x, y, PlantingArea_ID, PlantDate) VALUES (" + s.getX() + ", " + s.getY() + ", " + s.getPlantingAreaId() + ", '" + s.getDate() + "');";
 
         int id = c.insertQuery(sql);
         s.setID(id);
@@ -56,7 +57,7 @@ public class PlantingSpotDAO implements IDAO<PlantingSpot>{
 
         PlantingSpot spot = null;
 
-        String sql = "SELECT PlantingArea_ID, x, y FROM PlantingSpot WHERE ID = " + spotId + ";";
+        String sql = "SELECT PlantingArea_ID, x, y, PlantDate FROM PlantingSpot WHERE ID = " + spotId + ";";
         try {
             Statement s = c.getConnection().createStatement();
             ResultSet res = s.executeQuery(sql);
@@ -65,6 +66,7 @@ public class PlantingSpotDAO implements IDAO<PlantingSpot>{
             {
                 spot = new PlantingSpot(res.getInt("x"), res.getInt("y"));
                 spot.setPlantingAreaId(res.getInt("PlantingArea_ID"));
+                spot.setDate(LocalDate.parse(res.getString("plantDate")));
                 spot.setID(spotId);
             }
         } catch (SQLException e) {

@@ -2,38 +2,52 @@ package com.garden.gardenorganizerapp.dataobjects;
 
 import com.garden.gardenorganizerapp.db.DBConnection;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 public class Item extends DBObject{
 
-    private String name;
+    private int plantingAreaId = DBConnection.INVALID_ID;
 
     private Color color;
 
-    private int itemId = DBConnection.INVALID_ID;
+    private Integer variety_ID;
 
-    public Item(String name, Color color) {
-        this.name = name;
+    private Integer environment_ID;
+
+    public Item(Color color, Integer variety_ID, Integer environment_ID) {
         this.color = color;
+        this.variety_ID = variety_ID;
+        this.environment_ID = environment_ID;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPlantingAreaId(int plantingAreaId) {
+        this.plantingAreaId = plantingAreaId;
     }
 
-    public String getName() {
-        return name;
+    public int getPlantingAreaId() {
+        return plantingAreaId;
     }
 
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
-    }
-
-    public int getItemId() {
-        return itemId;
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public Color getColor() {
         return color;
+    }
+
+    public void setVariety_ID(Integer variety_ID) {
+        this.variety_ID = variety_ID;
+    }
+
+    public Integer getVariety_ID() {
+        return variety_ID;
+    }
+
+    public void setEnvironment_ID(Integer environment_ID) {
+        this.environment_ID = environment_ID;
+    }
+
+    public Integer getEnvironment_ID() {
+        return environment_ID;
     }
 }

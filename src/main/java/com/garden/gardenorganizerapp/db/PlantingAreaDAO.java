@@ -1,6 +1,7 @@
 package com.garden.gardenorganizerapp.db;
 
 import com.garden.gardenorganizerapp.GardenApplication;
+import com.garden.gardenorganizerapp.dataobjects.Item;
 import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
 import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
 
@@ -23,7 +24,7 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
 
     private boolean updateExistingArea(PlantingArea a) {
         DBConnection c = GardenApplication.getDBConnection();
-        String s = "UPDATE PlantingArea SET Garden_ID = " + a.getGardenId() + ", Item_ID = '" + a.getItemID() + "' WHERE ID = " + a.getID();
+        String s = "UPDATE PlantingArea SET Garden_ID = " + a.getGardenId() + " WHERE ID = " + a.getID();
         boolean success = false;
         if(c.query(s))
         {
@@ -40,13 +41,17 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
     private boolean insertNewArea(PlantingArea a)
     {
         DBConnection c = GardenApplication.getDBConnection();
-        String sql = "INSERT INTO PlantingArea (Garden_ID, Item_ID) VALUES (" + a.getGardenId() + ", '" + a.getItemID() +"');";
+        String sql = "INSERT INTO PlantingArea (Garden_ID) VALUES (" + a.getGardenId() + ");";
         int id = c.insertQuery(sql);
         boolean success = false;
         if(DBConnection.isIdValid(id))
         {
             success = true;
             a.setID(id);
+            ItemDAO idao = new ItemDAO();
+            a.getItem().setPlantingAreaId(id);
+            success &= idao.store(a.getItem());
+
             PlantingSpotDAO dao = new PlantingSpotDAO();
             for(PlantingSpot spot: a.getSpots()){
                 spot.setPlantingAreaId(a.getID());
@@ -72,14 +77,16 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
 
         PlantingArea a = null;
 
-        String sql = "SELECT Garden_ID, Item_ID FROM PlantingArea WHERE ID = " + areaId + ";";
+        String sql = "SELECT Garden_ID FROM PlantingArea WHERE ID = " + areaId + ";";
         try {
             Statement s = c.getConnection().createStatement();
             ResultSet res = s.executeQuery(sql);
 
             if(res.next())
             {
-                a = new PlantingArea(res.getInt("Item_ID"));
+                ItemDAO idao = new ItemDAO();
+                Item item = idao.loadForArea(areaId);
+                a = new PlantingArea(item);
                 a.setID(areaId);
                 a.setGardenId(res.getInt("Garden_ID"));
 

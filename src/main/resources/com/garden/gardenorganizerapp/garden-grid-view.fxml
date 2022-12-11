@@ -17,10 +17,13 @@
     </center>
     <left>
         <VBox alignment="CENTER">
-            <ListView fx:id="itemList" prefHeight="400.0" prefWidth="124.0">
+            <Label fx:id="label2" text="Wähle:" />
+            <VBox fx:id="buttonLayout"></VBox>
+            <Label fx:id="label" text="ODER Planze:" />
+            <ComboBox fx:id="cropDropDown" prefWidth="124.0"/>
+            <ListView fx:id="varietyList" prefWidth="124.0">
             </ListView>
         </VBox>
-
     </left>
     <bottom>
         <HBox alignment="CENTER" spacing="5.0" style="-fx-background-color: white;">

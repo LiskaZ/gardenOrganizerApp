@@ -1,18 +1,21 @@
 package com.garden.gardenorganizerapp.dataobjects;
 
 import com.garden.gardenorganizerapp.db.DBConnection;
-import javafx.scene.paint.Color;
+
+import java.time.LocalDate;
 
 public class PlantingSpot extends DBObject{
 
     private int x;
     private int y;
+    private LocalDate date;
 
     private int plantingAreaId = DBConnection.INVALID_ID;
 
     public PlantingSpot(int x, int y) {
         this.x = x;
         this.y = y;
+        this.date = LocalDate.now();
     }
 
     public void setX(int x) {
@@ -37,5 +40,13 @@ public class PlantingSpot extends DBObject{
 
     public int getPlantingAreaId() {
         return plantingAreaId;
+    }
+
+    public String getDate() {
+        return  date.toString();
+    }
+
+    public void setDate(LocalDate plantDate) {
+        this.date = plantDate;
     }
 }
