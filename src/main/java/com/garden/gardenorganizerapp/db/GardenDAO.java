@@ -19,6 +19,16 @@ public class GardenDAO implements IAllDAO<Garden>{
         }
     }
 
+    @Override
+    public boolean remove(Garden obj) {
+        return false;
+    }
+
+    @Override
+    public boolean remove(int id) {
+        return false;
+    }
+
     private boolean updateExistingGarden(Garden g) {
         DBConnection c = GardenApplication.getDBConnection();
         String sql = "UPDATE Garden SET Name = '" + g.getName() + "', Width = " + g.getWidth() +", Height = " + g.getHeight() + ", GridSize = " + g.getGridSize() + " WHERE ID = " + g.getID() + ";";

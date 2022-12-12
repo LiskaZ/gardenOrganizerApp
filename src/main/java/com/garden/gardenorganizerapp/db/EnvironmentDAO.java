@@ -19,6 +19,16 @@ public class EnvironmentDAO implements IAllDAO<Environment>{
         }
     }
 
+    @Override
+    public boolean remove(Environment obj) {
+        return false;
+    }
+
+    @Override
+    public boolean remove(int id) {
+        return false;
+    }
+
     private boolean updateExistingEnvironmentEnvironment(Environment env) {
         DBConnection c = GardenApplication.getDBConnection();
         String sql = "UPDATE ENVIRONMENT SET Name = '" + env.getName() + "', Defaultcolor = " + env.getColor() +" WHERE ID = " + env.getID() + ";";

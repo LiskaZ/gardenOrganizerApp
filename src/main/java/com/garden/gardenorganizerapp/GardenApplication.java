@@ -1,5 +1,6 @@
 package com.garden.gardenorganizerapp;
 
+import com.garden.gardenorganizerapp.dataobjects.Variety;
 import com.garden.gardenorganizerapp.db.DBConnection;
 import com.garden.gardenorganizerapp.db.VarietyDAO;
 import com.garden.gardenorganizerapp.viewcontrollers.StartViewController;

@@ -22,6 +22,16 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
         }
     }
 
+    @Override
+    public boolean remove(PlantingArea obj) {
+        return false;
+    }
+
+    @Override
+    public boolean remove(int id) {
+        return false;
+    }
+
     private boolean updateExistingArea(PlantingArea a) {
         DBConnection c = GardenApplication.getDBConnection();
         String s = "UPDATE PlantingArea SET Garden_ID = " + a.getGardenId() + " WHERE ID = " + a.getID();

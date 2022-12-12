@@ -8,7 +8,6 @@ import java.sql.Date;
 
 @DBEntity(tableName = "Variety")
 public class Variety extends DBObject{
-
     @DBField(name = "Crop_ID")
     private int Crop_ID;
     @DBField(name = "Name")
@@ -20,7 +19,7 @@ public class Variety extends DBObject{
     private java.sql.Date plantTimeEnd;
     @DBField(name="PlantSpacing")
     private int plantSpacing;
-    @DBField(name="PlantSpacing")
+    @DBField(name="RowSpacing")
     private int rowSpacing;
     @DBField(name="Size")
     private int size;
