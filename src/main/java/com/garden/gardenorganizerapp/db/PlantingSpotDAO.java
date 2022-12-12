@@ -2,6 +2,7 @@ package com.garden.gardenorganizerapp.db;
 
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
+import com.garden.gardenorganizerapp.db.daobase.IDAO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +10,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.Vector;
 
-public class PlantingSpotDAO implements IDAO<PlantingSpot>{
+public class PlantingSpotDAO implements IDAO<PlantingSpot> {
 
     public boolean store(PlantingSpot s)
     {
