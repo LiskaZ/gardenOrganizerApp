@@ -1,13 +1,8 @@
 package com.garden.gardenorganizerapp.viewcontrollers;
 
-import com.garden.gardenorganizerapp.dataobjects.Environment;
-import com.garden.gardenorganizerapp.dataobjects.Garden;
+import com.garden.gardenorganizerapp.dataobjects.*;
 import com.garden.gardenorganizerapp.GardenWidget;
-import com.garden.gardenorganizerapp.dataobjects.Item;
-import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
-import com.garden.gardenorganizerapp.db.EnvironmentDAO;
-import com.garden.gardenorganizerapp.db.GardenDAO;
-import com.garden.gardenorganizerapp.db.PlantingSpotDAO;
+import com.garden.gardenorganizerapp.db.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,8 +20,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.EventListener;
-import java.util.Vector;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class GardenGridViewController implements IViewController {
 
@@ -91,13 +86,33 @@ public class GardenGridViewController implements IViewController {
 
     private void loadCrops() {
         // TODO Liste aus DB abrufen
-        ObservableList<String> items = FXCollections.observableArrayList("Stein", "Gras", "Tomate", "Gurke");
-        cropDropDown.setItems(items);
+
+
+        CropDAO dao = new CropDAO();
+        Vector<Crop> crops = dao.loadAll();
+        ArrayList<String> cropNames = new ArrayList<>();
+        for (Crop crop : crops) {
+            cropNames.add(crop.getName());
+        }
+
+        ObservableList<String> cropList = FXCollections.observableArrayList(cropNames);
+        cropDropDown.setItems(cropList);
 
         cropDropDown.getSelectionModel().selectedItemProperty().addListener(x -> {
 
-            String crop = cropDropDown.getSelectionModel().getSelectedItem().toString();
-            ObservableList<String> varietyItems = FXCollections.observableArrayList(crop + "Stein", crop + "Gras", crop + "Tomate", crop + "Gurke");
+            String cropName = cropDropDown.getSelectionModel().getSelectedItem().toString();
+
+            Crop selectedCrop = crops.stream().filter(crop -> cropName.equals(crop.getName())).findAny().orElse(null);
+
+            VarietyDAO vDao = new VarietyDAO();
+            List<Variety> cropVarieties = vDao.loadVarietyForCrop(selectedCrop.getID());
+            ArrayList<String> varietyNames = new ArrayList<>();
+
+            for (Variety v : cropVarieties) {
+                varietyNames.add(v.getName());
+            }
+
+            ObservableList<String> varietyItems = FXCollections.observableArrayList(varietyNames);
             varietyList.setItems(varietyItems);
             varietyList.getSelectionModel().select(0);
         });
