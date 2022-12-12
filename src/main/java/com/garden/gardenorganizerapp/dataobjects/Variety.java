@@ -32,7 +32,7 @@ public class Variety extends DBObject{
     private Color defaultColor;
 
     @DBFKEntity(name = "Crop_ID")
-    private Crop crop = new Crop();
+    private Crop crop;
 
     public Crop getCrop() {
         return crop;

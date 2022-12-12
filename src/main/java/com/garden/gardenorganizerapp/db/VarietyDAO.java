@@ -42,7 +42,7 @@ public class VarietyDAO extends AbstractAllDAO<Variety> {
 
     public List<Variety> loadVarietyForCrop(int cropID) {
         Vector<Variety> varieties = loadAll();
-        return varieties.stream().filter(variety -> cropID == variety.getCrop_ID()).collect(Collectors.toUnmodifiableList());
+        return varieties.stream().filter(variety -> cropID == variety.getCrop().getID()).collect(Collectors.toUnmodifiableList());
     }
 
     @Override

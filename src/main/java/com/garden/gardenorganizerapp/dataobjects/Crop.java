@@ -1,6 +1,7 @@
 package com.garden.gardenorganizerapp.dataobjects;
 
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntity;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBField;
 import javafx.scene.paint.Color;
 
@@ -15,8 +16,16 @@ public class Crop extends DBObject{
     @DBField(name="Defaultcolor")
     private Color defaultColor;
 
-    @DBField(name="DefaultVariety_ID")
-    private int defaultVarietyID;
+    @DBFKEntity(name="DefaultVariety_ID", cascade = false)
+    private Variety defaultVariety;
+
+    public Variety getDefaultVariety() {
+        return defaultVariety;
+    }
+
+    public void setDefaultVariety(Variety defaultVariety) {
+        this.defaultVariety = defaultVariety;
+    }
 
     public String getName() {
         return Name;
@@ -24,14 +33,6 @@ public class Crop extends DBObject{
 
     public void setName(String name) {
         Name = name;
-    }
-
-    public int getDefaultVarietyID() {
-        return defaultVarietyID;
-    }
-
-    public void setDefaultVarietyID(int defaultVarietyID) {
-        this.defaultVarietyID = defaultVarietyID;
     }
 
     public Color getDefaultColor() {
