@@ -89,20 +89,15 @@ public class GardenGridViewController implements IViewController {
 
 
         CropDAO dao = new CropDAO();
-        Vector<Crop> crops = dao.loadAll();
-        ArrayList<String> cropNames = new ArrayList<>();
-        for (Crop crop : crops) {
-            cropNames.add(crop.getName());
-        }
+        ArrayList<Crop> crops = new ArrayList<>();
+        crops.addAll(dao.loadAll());
 
-        ObservableList<String> cropList = FXCollections.observableArrayList(cropNames);
+        ObservableList<Crop> cropList = FXCollections.observableArrayList(crops);
         cropDropDown.setItems(cropList);
 
         cropDropDown.getSelectionModel().selectedItemProperty().addListener(x -> {
 
-            String cropName = cropDropDown.getSelectionModel().getSelectedItem().toString();
-
-            Crop selectedCrop = crops.stream().filter(crop -> cropName.equals(crop.getName())).findAny().orElse(null);
+            Crop selectedCrop = (Crop)cropDropDown.getSelectionModel().getSelectedItem();
 
             VarietyDAO vDao = new VarietyDAO();
             List<Variety> cropVarieties = vDao.loadVarietyForCrop(selectedCrop.getID());

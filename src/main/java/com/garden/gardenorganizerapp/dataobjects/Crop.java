@@ -41,4 +41,10 @@ public class Crop extends DBObject{
     public void setDefaultColor(Color defaultColor) {
         this.defaultColor = defaultColor;
     }
+
+    @Override
+    public String toString()
+    {
+        return getName();
+    }
 }
