@@ -2,13 +2,11 @@ package com.garden.gardenorganizerapp.db;
 
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.Item;
-import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
 import javafx.scene.paint.Color;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Vector;
 
 public class ItemDAO implements IDAO<Item>{
 
@@ -20,6 +18,16 @@ public class ItemDAO implements IDAO<Item>{
         else {
             return insertNewItem(item);
         }
+    }
+
+    @Override
+    public boolean remove(Item obj) {
+        return false;
+    }
+
+    @Override
+    public boolean remove(int id) {
+        return false;
     }
 
     private boolean insertNewItem(Item item) {

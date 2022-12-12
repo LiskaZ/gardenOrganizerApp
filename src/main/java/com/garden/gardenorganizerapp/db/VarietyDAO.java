@@ -45,8 +45,4 @@ public class VarietyDAO extends AbstractAllDAO<Variety>{
     public Variety loadLazy(int id) {
         return null;
     }
-    @Override
-    public boolean store(Variety obj) {
-        return false;
-    }
 }

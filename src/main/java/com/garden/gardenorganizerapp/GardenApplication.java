@@ -1,5 +1,6 @@
 package com.garden.gardenorganizerapp;
 
+import com.garden.gardenorganizerapp.dataobjects.Variety;
 import com.garden.gardenorganizerapp.db.DBConnection;
 import com.garden.gardenorganizerapp.db.VarietyDAO;
 import com.garden.gardenorganizerapp.viewcontrollers.StartViewController;
@@ -20,9 +21,8 @@ public class GardenApplication extends Application {
         new ViewLoader<StartViewController>("start-view.fxml");
 
         VarietyDAO dao = new VarietyDAO();
-        for(var v: dao.loadAll()) {
-            System.out.println(v.getID() + ": " + v.getName() + "\t Color: " + v.getDefaultColor().toString());
-        }
+        Variety v = dao.load(21);
+        dao.remove(v);
     }
 
     public static void main(String[] args) {

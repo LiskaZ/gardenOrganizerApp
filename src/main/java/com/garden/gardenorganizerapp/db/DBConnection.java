@@ -33,6 +33,7 @@ public class DBConnection {
             //close();
         }
         catch (SQLException e) {
+            System.out.println(String.format("During Query: \"%s\"", sql));
             e.printStackTrace();
         }
 
