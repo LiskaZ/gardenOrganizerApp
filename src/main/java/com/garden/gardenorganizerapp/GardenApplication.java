@@ -19,10 +19,6 @@ public class GardenApplication extends Application {
     public void start(Stage stage) throws IOException {
         THE_STAGE = stage;
         new ViewLoader<StartViewController>("start-view.fxml");
-
-        VarietyDAO dao = new VarietyDAO();
-        Variety v = dao.load(21);
-        dao.remove(v);
     }
 
     public static void main(String[] args) {
