@@ -1,6 +1,7 @@
 package com.garden.gardenorganizerapp.dataobjects;
 
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntity;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBField;
 import javafx.scene.paint.Color;
 
@@ -8,8 +9,6 @@ import java.sql.Date;
 
 @DBEntity(tableName = "Variety")
 public class Variety extends DBObject{
-    @DBField(name = "Crop_ID")
-    private int Crop_ID;
     @DBField(name = "Name")
     private String Name;
     @DBField(name="HarvestTime_Begin")
@@ -32,12 +31,15 @@ public class Variety extends DBObject{
     @DBField(name="Defaultcolor")
     private Color defaultColor;
 
-    public int getCrop_ID() {
-        return Crop_ID;
+    @DBFKEntity(name = "Crop_ID")
+    private Crop crop = new Crop();
+
+    public Crop getCrop() {
+        return crop;
     }
 
-    public void setCrop_ID(int Crop_ID) {
-        this.Crop_ID = Crop_ID;
+    public void setCrop(Crop crop) {
+        this.crop = crop;
     }
 
     public String getName() {

@@ -1,5 +1,6 @@
-package com.garden.gardenorganizerapp.db;
+package com.garden.gardenorganizerapp.db.daobase;
 
+import com.garden.gardenorganizerapp.db.DBConnection;
 import javafx.scene.paint.Color;
 
 import java.lang.reflect.Field;
@@ -60,8 +61,11 @@ public class DBQueryCreator<T> {
     private String getColumnString() {
         String s = "";
         var fields = helper.getDBFieldNames();
+        for(String fkName: helper.getFKFieldNames()){
+            fields.add(0, fkName);
+        }
         if (helper.hasPK()) {
-            fields.add(helper.getPKColName());
+            fields.add(0,helper.getPKColName());
         }
         for (var f : fields) {
             s += f + FIELD_SEPARATOR;

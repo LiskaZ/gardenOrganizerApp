@@ -4,6 +4,7 @@ import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.Item;
 import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
 import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
+import com.garden.gardenorganizerapp.db.daobase.IDAO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

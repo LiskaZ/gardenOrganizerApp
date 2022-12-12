@@ -14,4 +14,6 @@ module com.garden.gardenorganizerapp {
     opens com.garden.gardenorganizerapp.dataobjects to javafx.fxml;
     exports com.garden.gardenorganizerapp.dataobjects.annotations;
     opens com.garden.gardenorganizerapp.dataobjects.annotations to javafx.fxml;
+    exports com.garden.gardenorganizerapp.db.daobase;
+    opens com.garden.gardenorganizerapp.db.daobase to javafx.fxml;
 }

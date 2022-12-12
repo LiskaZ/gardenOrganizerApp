@@ -1,9 +1,11 @@
-package com.garden.gardenorganizerapp.db;
+package com.garden.gardenorganizerapp.db.daobase;
 
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntity;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBField;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBPrimaryKey;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -33,7 +35,7 @@ public class DBObjectMetaInfoHelper<T> {
     {
         Vector<String> fields = new Vector<>();
         for(Field f: getDBFields()){
-            fields.add(getDBFieldName(f));
+            fields.add(getDBFieldColName(f));
         }
         return fields;
     }
@@ -48,8 +50,24 @@ public class DBObjectMetaInfoHelper<T> {
         {
             return getDBPrimaryKeyName(f);
         }
+        else if(hasFKs() && isFKField(f))
+        {
+            return getFKColName(f);
+        }
 
         return "";
+    }
+
+    private String getFKColName(Field f) {
+        return f.getAnnotation(DBFKEntity.class).name();
+    }
+
+    private boolean isFKField(Field f) {
+        return f.isAnnotationPresent(DBFKEntity.class);
+    }
+
+    private boolean hasFKs() {
+        return !getAnnotationFields(DBFKEntity.class).isEmpty();
     }
 
     public String getDBFieldName(Field f) {
@@ -96,38 +114,35 @@ public class DBObjectMetaInfoHelper<T> {
     }
 
     public <FieldType> FieldType getFieldValueT(Field f, T obj) {
-        boolean canAccess = makeFieldAccessable(f, obj);
+        f.setAccessible(true);
         FieldType o = null;
         try {
             o = (FieldType)f.get(obj);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        restoreAccessibility(f, canAccess);
         return o;
     }
 
     public Object getFieldValue(Field f, T obj) {
-        boolean canAccess = makeFieldAccessable(f, obj);
+        f.setAccessible(true);
         Object o = null;
         try {
             o = f.get(obj);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        restoreAccessibility(f, canAccess);
         return o;
     }
 
     public boolean isFieldValueNonNull(Field f, T obj) {
-        boolean canAccess = makeFieldAccessable(f, obj);
+        f.setAccessible(true);
         boolean isNull = true;
         try {
             isNull = f.get(obj) == null;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        restoreAccessibility(f, canAccess);
 
         return !isNull;
     }
@@ -145,15 +160,6 @@ public class DBObjectMetaInfoHelper<T> {
         return null;
     }
 
-    public Vector<Field> getDBFieldsAccessible()
-    {
-        return getAnnotationFieldsAccessible(DBField.class);
-    }
-
-    public Vector<Field> getAnnotationFieldsAccessible(Class<? extends Annotation> ann) {
-        return getAnnotationFields(ann, true);
-    }
-
     private String getDBPrimaryKeyName(Field f) {
         if(isPKField(f))
         {
@@ -163,51 +169,31 @@ public class DBObjectMetaInfoHelper<T> {
         return "";
     }
 
-    private Vector<Field> getAnnotationFields(Class<?> c, Class<? extends Annotation> ann, boolean accessible)
+    private Vector<Field> getAnnotationFields(Class<?> c, Class<? extends Annotation> ann)
     {
         Vector<Field> fields = new Vector<>();
         if(c != Object.class){
             for(Field f: c.getDeclaredFields()){
                 if(f.isAnnotationPresent(ann)){
-                    f.setAccessible(accessible);
+                    f.setAccessible(true);
                     fields.add(f);
                 }
             }
-            fields.addAll(getAnnotationFields(c.getSuperclass(), ann, accessible));
+            fields.addAll(getAnnotationFields(c.getSuperclass(), ann));
         }
 
         return fields;
     }
 
 
-    private Vector<Field> getDBFields()
+    public Vector<Field> getDBFields()
     {
         return getAnnotationFields(DBField.class);
     }
 
-    private Vector<Field> getAnnotationFields(Class<? extends Annotation> ann)
+    public Vector<Field> getAnnotationFields(Class<? extends Annotation> ann)
     {
-        return getAnnotationFields(type.getClass(), ann, false);
-    }
-
-    private Vector<Field> getAnnotationFields(Class<? extends Annotation> ann, boolean accessible)
-    {
-        return getAnnotationFields(type.getClass(), ann, accessible);
-    }
-
-    private boolean makeFieldAccessable(Field f, T obj)
-    {
-        boolean canAccess = f.canAccess(obj);
-        if(!canAccess) {
-            f.setAccessible(true);
-        }
-
-        return canAccess;
-    }
-
-    private void restoreAccessibility(Field f, boolean accessible)
-    {
-        f.setAccessible(accessible);
+        return getAnnotationFields(type.getClass(), ann);
     }
 
     private boolean isPKField(Field f) {
@@ -217,4 +203,55 @@ public class DBObjectMetaInfoHelper<T> {
     private boolean isDBField(Field f) {
         return f.isAnnotationPresent(DBField.class);
     }
+    public Vector<Field> getFKFields() {
+        Vector<Field> fields = new Vector<>();
+        for(Field f: getAnnotationFields(DBFKEntity.class))
+        {
+            fields.add(f);
+        }
+
+        return fields;
+    }
+
+    public Vector<String> getFKFieldNames() {
+        Vector<String> s = new Vector<>();
+        for(Field f: getAnnotationFields(DBFKEntity.class))
+        {
+            s.add(f.getAnnotation(DBFKEntity.class).name());
+        }
+
+        return s;
+    }
+
+    public boolean isFKFieldCascade(Field f) {
+        return isFKField(f) && f.getAnnotation(DBFKEntity.class).cascade();
+    }
+
+    public AbstractDAO<? extends IDAO> createDao(Field f) {
+
+        ClassLoader loader = ClassLoader.getSystemClassLoader();
+        AbstractDAO<? extends IDAO> dao = null;
+        try {
+            dao = (AbstractDAO<? extends IDAO>) loader.loadClass(getDaoClassName(f)).getDeclaredConstructor().newInstance();
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return dao;
+    }
+
+    private String getDaoClassName(Field f) throws ClassNotFoundException, IOException {
+        return "com.garden.gardenorganizerapp.db." + f.getType().getSimpleName() + "DAO";
+    }
+
 }

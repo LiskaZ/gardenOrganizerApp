@@ -1,6 +1,7 @@
-package com.garden.gardenorganizerapp.db;
+package com.garden.gardenorganizerapp.db.daobase;
 
 import com.garden.gardenorganizerapp.dataobjects.DBObject;
+import com.garden.gardenorganizerapp.db.DBConnection;
 
 import java.util.Vector;
 

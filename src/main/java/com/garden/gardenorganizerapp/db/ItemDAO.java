@@ -2,13 +2,14 @@ package com.garden.gardenorganizerapp.db;
 
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.Item;
+import com.garden.gardenorganizerapp.db.daobase.IDAO;
 import javafx.scene.paint.Color;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ItemDAO implements IDAO<Item>{
+public class ItemDAO implements IDAO<Item> {
 
     public boolean store(Item item)
     {

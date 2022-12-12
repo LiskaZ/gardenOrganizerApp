@@ -2,13 +2,14 @@ package com.garden.gardenorganizerapp.db;
 
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.Environment;
+import com.garden.gardenorganizerapp.db.daobase.IAllDAO;
 import javafx.scene.paint.Color;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class EnvironmentDAO implements IAllDAO<Environment>{
+public class EnvironmentDAO implements IAllDAO<Environment> {
 
     public boolean store(Environment i) {
         if(DBConnection.isIdValid(i.getID())) {

@@ -3,12 +3,13 @@ package com.garden.gardenorganizerapp.db;
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.Garden;
 import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
+import com.garden.gardenorganizerapp.db.daobase.IAllDAO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class GardenDAO implements IAllDAO<Garden>{
+public class GardenDAO implements IAllDAO<Garden> {
 
     public boolean store(Garden g) {
         if(DBConnection.isIdValid(g.getID())) {

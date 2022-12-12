@@ -21,8 +21,10 @@ public class GardenApplication extends Application {
         new ViewLoader<StartViewController>("start-view.fxml");
 
         VarietyDAO dao = new VarietyDAO();
-        Variety v = dao.load(21);
-        dao.remove(v);
+        for(Variety v: dao.loadAll())
+        {
+            System.out.println(v.getName() + ", Crop: " + v.getCrop().getName());
+        }
     }
 
     public static void main(String[] args) {

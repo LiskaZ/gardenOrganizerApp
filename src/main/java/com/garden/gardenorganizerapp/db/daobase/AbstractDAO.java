@@ -1,9 +1,11 @@
-package com.garden.gardenorganizerapp.db;
+package com.garden.gardenorganizerapp.db.daobase;
 
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.DBObject;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntity;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBField;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBPrimaryKey;
+import com.garden.gardenorganizerapp.db.DBConnection;
 import javafx.scene.paint.Color;
 
 import java.lang.reflect.Field;
@@ -108,12 +110,12 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
 
     protected boolean readFromResultSet(ResultSet res, T obj) {
         try {
-            for (Field f : infoHelper.getAnnotationFieldsAccessible(DBPrimaryKey.class)) {
+            for (Field f : infoHelper.getAnnotationFields(DBPrimaryKey.class)) {
                 if (f.getType() == Integer.TYPE) {
                     f.set(obj, res.getInt(f.getAnnotation(DBPrimaryKey.class).name()));
                 }
             }
-            for (Field f : infoHelper.getDBFieldsAccessible()) {
+            for (Field f : infoHelper.getDBFields()) {
                 if (f.getType() == Integer.TYPE) {
                     f.set(obj, res.getInt(f.getAnnotation(DBField.class).name()));
                 } else if (f.getType() == String.class) {
@@ -123,8 +125,16 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
                     f.set(obj, s == null || s.isEmpty() ? null : Color.valueOf(s));
                 }
             }
+            for(Field f: infoHelper.getFKFields())
+            {
+                if(infoHelper.isFKFieldCascade(f)) {
+                    AbstractDAO<? extends IDAO> dao = infoHelper.createDao(f);
+                    f.setAccessible(true);
+                    f.set(obj, dao.load(res.getInt(f.getAnnotation(DBFKEntity.class).name())));
+                }
+            }
         }
-        catch (SQLException | IllegalAccessException e){
+        catch (SQLException | IllegalAccessException e) {
             e.printStackTrace();
             return false;
         }
