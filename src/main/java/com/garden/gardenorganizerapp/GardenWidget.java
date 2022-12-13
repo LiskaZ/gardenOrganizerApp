@@ -11,15 +11,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GardenWidget extends Canvas {
-
-    private static final ArrayList<Color> COLORS = new ArrayList(
-            List.of(Color.YELLOWGREEN, Color.ROYALBLUE, Color.ORANGE, Color.OLIVEDRAB, Color.INDIGO)
-    );
 
     private Garden TheGarden;
 
@@ -219,9 +212,7 @@ public class GardenWidget extends Canvas {
             GraphicsContext gc = getGraphicsContext2D();
             double gSize = TheGarden.getGridSize();
             for (PlantingSpot s : area.getSpots()) {
-                // TODO Hier muss Liste aller Items geladen werden?
-//                Item item = items.getOne(area.getItemID()).getColor();
-                gc.setFill(Color.YELLOWGREEN);
+                gc.setFill(area.getItem().getColor());
                 gc.fillRect(s.getX() * gSize + 1, s.getY() * gSize + 1, gSize - 2, gSize - 2);
             }
         }
@@ -229,7 +220,6 @@ public class GardenWidget extends Canvas {
 
     public void newPlantingArea() {
         this.area = new PlantingArea();
-//        this.color = COLORS.get((COLORS.indexOf(item) + 1) % COLORS.size());
     }
 
     public PlantingArea getCurrentPlantingArea() {

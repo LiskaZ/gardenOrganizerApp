@@ -13,10 +13,13 @@ public class Item extends DBObject{
 
     private Integer environment_ID;
 
-    public Item(Color color, Integer variety_ID, Integer environment_ID) {
+    private int count;
+
+    public Item(Color color, Integer variety_ID, Integer environment_ID, int count) {
         this.color = color;
         this.variety_ID = variety_ID;
         this.environment_ID = environment_ID;
+        this.count = count;
     }
 
     public void setPlantingAreaId(int plantingAreaId) {
@@ -49,5 +52,13 @@ public class Item extends DBObject{
 
     public Integer getEnvironment_ID() {
         return environment_ID;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

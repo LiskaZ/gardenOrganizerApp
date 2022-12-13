@@ -6,6 +6,7 @@ import com.garden.gardenorganizerapp.dataobjects.annotations.DBField;
 import javafx.scene.paint.Color;
 
 import java.sql.Date;
+import java.util.Optional;
 
 @DBEntity(tableName = "Variety")
 public class Variety extends DBObject{
@@ -131,10 +132,16 @@ public class Variety extends DBObject{
     }
 
     public Color getDefaultColor() {
-        return defaultColor;
+        return defaultColor != null ? defaultColor : crop.getDefaultColor();
     }
 
     public void setDefaultColor(Color defaultColor) {
         this.defaultColor = defaultColor;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getName();
     }
 }

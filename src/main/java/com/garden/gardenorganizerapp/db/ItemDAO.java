@@ -33,7 +33,7 @@ public class ItemDAO implements IDAO<Item> {
 
     private boolean insertNewItem(Item item) {
         DBConnection c = GardenApplication.getDBConnection();
-        String sql = "INSERT INTO Item (Color, Variety_ID, Environment_ID, PlantingArea_ID) VALUES ('" + item.getColor() + "', " + item.getVariety_ID() + ", " + item.getEnvironment_ID() + ", " + item.getPlantingAreaId()+ ");";
+        String sql = "INSERT INTO Item (Color, Variety_ID, Environment_ID, PlantingArea_ID, Anzahl) VALUES ('" + item.getColor() + "', " + item.getVariety_ID() + ", " + item.getEnvironment_ID() + ", " + item.getPlantingAreaId()+ ", " + item.getCount()+  ");";
 
         int id = c.insertQuery(sql);
         item.setID(id);
@@ -42,7 +42,7 @@ public class ItemDAO implements IDAO<Item> {
 
     private boolean updateExistingItem(Item item) {
         DBConnection c = GardenApplication.getDBConnection();
-        String sql = "UPDATE Item SET Color = '" + item.getColor() + "', Variety_ID = " + item.getVariety_ID() + ", Environment_ID = " + item.getEnvironment_ID() +  " WHERE ID = " + item.getID();
+        String sql = "UPDATE Item SET Color = '" + item.getColor() + "', Variety_ID = " + item.getVariety_ID() + ", Environment_ID = " + item.getEnvironment_ID() + ", Anzahl = " + item.getCount()  +  " WHERE ID = " + item.getID();
         if(c.query(sql))
         {
             return true;
@@ -56,14 +56,14 @@ public class ItemDAO implements IDAO<Item> {
 
         Item item = null;
 
-        String sql = "SELECT Color, Variety_ID, Environment_ID FROM Item WHERE ID = " + itemID + ";";
+        String sql = "SELECT Color, Variety_ID, Environment_ID, PlantingArea_ID, Anzahl FROM Item WHERE ID = " + itemID + ";";
         try {
             Statement s = c.getConnection().createStatement();
             ResultSet res = s.executeQuery(sql);
 
             if(res.next())
             {
-                item = new Item(Color.valueOf(res.getString("Color")), res.getInt("Variety_ID"), res.getInt("Environment_ID"));
+                item = new Item(Color.valueOf(res.getString("Color")), res.getInt("Variety_ID"), res.getInt("Environment_ID"), res.getInt("Anzahl"));
                 item.setID(itemID);
             }
         } catch (SQLException e) {
@@ -81,7 +81,7 @@ public class ItemDAO implements IDAO<Item> {
     public Item loadForArea(int areaId) {
         DBConnection c = GardenApplication.getDBConnection();
 
-        String sql = "SELECT ID, Color, Variety_ID, Environment_ID, PlantingArea_ID FROM Item WHERE PlantingArea_ID = " + areaId + ";";
+        String sql = "SELECT ID, Color, Variety_ID, Environment_ID, PlantingArea_ID, Anzahl FROM Item WHERE PlantingArea_ID = " + areaId + ";";
         try {
             Statement s = c.getConnection().createStatement();
             ResultSet res = s.executeQuery(sql);
@@ -91,7 +91,8 @@ public class ItemDAO implements IDAO<Item> {
                 Item item = new Item(
                         Color.valueOf(res.getString("Color")),
                         Integer.valueOf(res.getInt("Variety_ID")),
-                        Integer.valueOf(res.getInt("Environment_ID")));
+                        Integer.valueOf(res.getInt("Environment_ID")),
+                        res.getInt("Anzahl"));
                 item.setPlantingAreaId(res.getInt("PlantingArea_ID"));
                 return item;
             }

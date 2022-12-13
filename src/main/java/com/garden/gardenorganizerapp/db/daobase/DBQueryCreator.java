@@ -35,7 +35,6 @@ public class DBQueryCreator<T> {
             s += " WHERE " + helper.getPKColName() + " = " + id;
             s += " LIMIT 1";
         }
-        System.out.println(s);
         return s;
     }
 

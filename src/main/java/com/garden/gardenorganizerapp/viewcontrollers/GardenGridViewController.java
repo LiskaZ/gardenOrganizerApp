@@ -10,10 +10,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -53,6 +50,9 @@ public class GardenGridViewController implements IViewController {
     private VBox buttonLayout;
 
     @FXML
+    private Spinner plantCount;
+
+    @FXML
     Button newBed;
 
     public GardenGridViewController() throws IOException {
@@ -66,6 +66,27 @@ public class GardenGridViewController implements IViewController {
         createMenu(menuBar);
         loadCrops();
         loadEnvironment();
+        loadVariety(1);
+    }
+
+    private void loadVariety(int cropID) {
+        VarietyDAO vDao = new VarietyDAO();
+        ArrayList<Variety> varietyNames = new ArrayList<>();
+        varietyNames.addAll(vDao.loadVarietyForCrop(cropID));
+
+        ObservableList<Variety> varietyItems = FXCollections.observableArrayList(varietyNames);
+        varietyList.setItems(varietyItems);
+        varietyList.getSelectionModel().select(0);
+        varietyList.getSelectionModel().selectedItemProperty().addListener(x -> {
+            Variety selectedVariety = (Variety) varietyList.getSelectionModel().getSelectedItem();
+            onVarietyClicked(selectedVariety);
+        });
+    }
+
+    private void onVarietyClicked(Variety selectedVariety) {
+        if (selectedVariety != null) {
+            gardenWidget.setItem(new Item(selectedVariety.getDefaultColor(), selectedVariety.getID(), null, (Integer) plantCount.getValue()));
+        }
     }
 
     private void loadEnvironment() {
@@ -78,15 +99,13 @@ public class GardenGridViewController implements IViewController {
             envButton.setId(String.format("envButton_%d", env.getID()));
             envButton.setOnAction(e -> {
                 int s = Integer.parseInt(envButton.getId().split("_")[1]);
-                gardenWidget.setItem(new Item(env.getColor(), null, s));
+                gardenWidget.setItem(new Item(env.getColor(), null, s, 1));
             });
             buttonLayout.getChildren().add(envButton);
         }
     }
 
     private void loadCrops() {
-        // TODO Liste aus DB abrufen
-
 
         CropDAO dao = new CropDAO();
         ArrayList<Crop> crops = new ArrayList<>();
@@ -94,25 +113,13 @@ public class GardenGridViewController implements IViewController {
 
         ObservableList<Crop> cropList = FXCollections.observableArrayList(crops);
         cropDropDown.setItems(cropList);
+        cropDropDown.getSelectionModel().select(0);
 
         cropDropDown.getSelectionModel().selectedItemProperty().addListener(x -> {
 
-            Crop selectedCrop = (Crop)cropDropDown.getSelectionModel().getSelectedItem();
-
-            VarietyDAO vDao = new VarietyDAO();
-            List<Variety> cropVarieties = vDao.loadVarietyForCrop(selectedCrop.getID());
-            ArrayList<String> varietyNames = new ArrayList<>();
-
-            for (Variety v : cropVarieties) {
-                varietyNames.add(v.getName());
-            }
-
-            ObservableList<String> varietyItems = FXCollections.observableArrayList(varietyNames);
-            varietyList.setItems(varietyItems);
-            varietyList.getSelectionModel().select(0);
+            Crop selectedCrop = (Crop) cropDropDown.getSelectionModel().getSelectedItem();
+            loadVariety(selectedCrop.getID());
         });
-
-        cropDropDown.getSelectionModel().select(0);
     }
 
     public void setGarden(Garden garden) {
@@ -130,17 +137,14 @@ public class GardenGridViewController implements IViewController {
         stage.setTitle(this.garden.getName());
     }
 
-    public void onNewBedClick(ActionEvent actionEvent) {
-
-        garden.addPlantingArea(gardenWidget.getCurrentPlantingArea());
+    public void onAddPlantsClick(ActionEvent actionEvent) {
+        PlantingArea currentArea = gardenWidget.getCurrentPlantingArea();
+        currentArea.getItem().setCount((Integer) plantCount.getValue());
+        garden.addPlantingArea(currentArea);
 
         GardenDAO dao = new GardenDAO();
         dao.store(this.garden);
         gardenWidget.newPlantingArea();
-
-    }
-
-    public void onAddPlantsClick(ActionEvent actionEvent) {
     }
 
     //TODO Spot hier wirklich entfernen oder Pflanze entfernen??
