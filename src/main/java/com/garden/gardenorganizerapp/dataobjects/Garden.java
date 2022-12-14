@@ -4,11 +4,10 @@ import com.garden.gardenorganizerapp.db.DBConnection;
 
 import java.util.Vector;
 
-public class Garden extends DBObject{
+public class Garden extends DBObject {
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getName();
     }
 
@@ -53,8 +52,7 @@ public class Garden extends DBObject{
 
     private int gridSize = 20;
 
-    public Garden(int w, int h, String name, int gridSize, double percentage)
-    {
+    public Garden(int w, int h, String name, int gridSize, double percentage) {
         this.gridSize = gridSize;
         this.width = normalizeGrid(w);
         this.height = normalizeGrid(h);
@@ -63,7 +61,7 @@ public class Garden extends DBObject{
         this.percentage = percentage;
     }
 
-    private int normalizeGrid(int n)
+    public int normalizeGrid(int n)
     {
         if (n % this.gridSize >= this.gridSize/2){
             return n + (this.gridSize - n % this.gridSize);
@@ -72,18 +70,16 @@ public class Garden extends DBObject{
         }
     }
 
-    public int normalizeCoordToGrid(double coord)
-    {
-        return (int)coord / this.gridSize;
+    public int normalizeCoordToGrid(double coord) {
+        return (int) coord / this.gridSize;
     }
 
     public Vector<PlantingArea> getAreas() {
         return areas;
     }
 
-    public void addPlantingArea(PlantingArea area)
-    {
-        if(null != area) {
+    public void addPlantingArea(PlantingArea area) {
+        if (null != area) {
             areas.add(area);
         }
     }

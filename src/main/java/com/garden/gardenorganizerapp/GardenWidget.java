@@ -1,9 +1,7 @@
 package com.garden.gardenorganizerapp;
 
-import com.garden.gardenorganizerapp.dataobjects.Garden;
-import com.garden.gardenorganizerapp.dataobjects.Item;
-import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
-import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
+import com.garden.gardenorganizerapp.dataobjects.*;
+import com.garden.gardenorganizerapp.db.VarietyDAO;
 import com.garden.gardenorganizerapp.viewcontrollers.GardenGridViewController;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -19,36 +17,37 @@ public class GardenWidget extends Canvas {
     private Point2D mouseDraggingStartCoord = null;
 
     private Point2D currentMouseCoord = null;
+    private Point2D currentMouseMoveCoordStartRec = null;
+    private Point2D currentMouseMoveCoordEndRec = null;
+
 
     private PlantingArea area = new PlantingArea();
 
-    public void setTheGarden(Garden theGarden) {
-        TheGarden = theGarden;
-    }
-
-    public void setArea(PlantingArea area) {
-        this.area = area;
-    }
-
     public void setItem(Item item) {
-        if (this.area.getItem() == null && item != null){
-            setOnMouseClicked(e -> {
-                onMouseClicked(e.getX(), e.getY());
-            });
+        if (this.area.getItem() == null && item != null) {
+            setOnMouseMoved(e -> onMouseMoved(e.getX(), e.getY()));
+            setOnMouseClicked(e -> onMouseClicked(e.getX(), e.getY()));
 
-            setOnMousePressed(e -> {
-                onMousePressed(e.getX(), e.getY());
-            });
+            setOnMousePressed(e -> onMousePressed(e.getX(), e.getY()));
 
-            setOnMouseDragged(e -> {
-                onMouseDragged(e.getX(), e.getY());
-            });
+            setOnMouseDragged(e -> onMouseDragged(e.getX(), e.getY()));
 
-            setOnMouseReleased(e -> {
-                onMouseReleased(e.getX(), e.getY());
-            });
+            setOnMouseReleased(e -> onMouseReleased());
         }
         this.area.setItem(item);
+    }
+
+    private void onMouseMoved(double x, double y) {
+        // Maus entered Canvas
+
+        int normX = TheGarden.normalizeCoordToGrid(x);
+        int normY = TheGarden.normalizeCoordToGrid(y);
+        if (currentMouseMoveCoordStartRec == null) {
+            this.currentMouseMoveCoordStartRec = new Point2D(normX, normY);
+        } else if (currentMouseMoveCoordStartRec.getX() != normX || currentMouseMoveCoordStartRec.getY() != normY) {
+            this.currentMouseMoveCoordStartRec = new Point2D(normX, normY);
+        }
+        drawGarden();
     }
 
     private GardenGridViewController controller;
@@ -69,22 +68,24 @@ public class GardenWidget extends Canvas {
         drawGarden();
     }
 
-    public void onMouseReleased(double x, double y) {
+    public void onMouseReleased() {
         if (currentMouseCoord != null) {
             addSelectedSpotsToPlantingArea();
         }
         drawGarden();
     }
-// TODO Sobald Area ohne Spots, muss Area archiviert werden
+
+    // TODO Sobald Area ohne Spots, muss Area archiviert werden
     public void onMouseClicked(double x, double y) {
         if (isAllowedToHandleClick()) {
-            Point2D gridCoords = toGridCoords(x, y);
+            Point2D gridCoords =
+                    toGridCoords(x, y);
             PlantingArea containingArea = getAreaContainingSpotCoords(gridCoords);
             if (containingArea != null && containingArea.removeSpot(gridCoords)) {
                 controller.removeSpotFromDB(containingArea.getID(), new PlantingSpot(TheGarden.normalizeCoordToGrid(x), TheGarden.normalizeCoordToGrid(y)));
 
             } else {
-                addSingleSpotToPlantingArea(gridCoords);
+                addSingleSpotToPlantingArea();
             }
         } else {
             enableHandleClick();
@@ -112,8 +113,13 @@ public class GardenWidget extends Canvas {
         return new Point2D(TheGarden.normalizeCoordToGrid(x), TheGarden.normalizeCoordToGrid(y));
     }
 
-    private void addSingleSpotToPlantingArea(Point2D coord) {
-        area.addSpot(coord);
+    private void addSingleSpotToPlantingArea() {
+        assert currentMouseMoveCoordEndRec != null;
+        for (int i = (int) currentMouseMoveCoordStartRec.getX(); i < currentMouseMoveCoordEndRec.getX(); i++) {
+            for (int j = (int) currentMouseMoveCoordStartRec.getY(); j < currentMouseMoveCoordEndRec.getY(); j++) {
+                area.addSpot(new Point2D(i, j));
+            }
+        }
     }
 
     private void addSelectedSpotsToPlantingArea() {
@@ -171,6 +177,30 @@ public class GardenWidget extends Canvas {
         drawSelectionRect();
         drawPlantingAreas();
         drawPlantingArea(area);
+        if (currentMouseMoveCoordStartRec != null) {
+            drawHoverRect();
+        }
+    }
+
+    private void drawHoverRect() {
+        GraphicsContext gc = getGraphicsContext2D();
+        gc.setFill(new Color(0.136, 0.232, 0.136, 0.67));
+        gc.beginPath();
+
+        double posStartX = currentMouseMoveCoordStartRec.getX();
+        double posStartY = currentMouseMoveCoordStartRec.getY();
+        int g = TheGarden.getGridSize();
+        if (area.getItem().getVariety_ID() == null) {
+            gc.fillRect(posStartX * g, posStartY * g, g, g);
+            this.currentMouseMoveCoordEndRec = new Point2D(posStartX + 1, posStartY + 1);
+        } else {
+            VarietyDAO dao = new VarietyDAO();
+            Variety v = dao.load(area.getItem().getVariety_ID());
+            int size = TheGarden.normalizeGrid(v.getPlantSpacing());
+            int row = TheGarden.normalizeGrid(v.getRowSpacing());
+            gc.fillRect(posStartX * g, posStartY * g, size, row);
+            this.currentMouseMoveCoordEndRec = new Point2D(posStartX + TheGarden.normalizeCoordToGrid(v.getPlantSpacing()), posStartY + TheGarden.normalizeCoordToGrid(v.getRowSpacing()));
+        }
     }
 
     private boolean shouldDrawSelectionRect() {
