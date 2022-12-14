@@ -85,7 +85,10 @@ public class GardenGridViewController implements IViewController {
 
     private void onVarietyClicked(Variety selectedVariety) {
         if (selectedVariety != null) {
-            gardenWidget.setItem(new Item(selectedVariety.getDefaultColor(), selectedVariety.getID(), null, (Integer) plantCount.getValue()));
+            Item item = new Item();
+            item.setVariety_ID(selectedVariety.getID());
+            item.setColor(selectedVariety.getDefaultColor());
+            gardenWidget.setItem(item);
         }
     }
 
@@ -99,7 +102,11 @@ public class GardenGridViewController implements IViewController {
             envButton.setId(String.format("envButton_%d", env.getID()));
             envButton.setOnAction(e -> {
                 int s = Integer.parseInt(envButton.getId().split("_")[1]);
-                gardenWidget.setItem(new Item(env.getColor(), null, s, 1));
+                Item item = new Item();
+                item.setColor(env.getColor());
+                item.setEnvironment_ID(s);
+                item.setCount(1);
+                gardenWidget.setItem(item);
             });
             buttonLayout.getChildren().add(envButton);
         }

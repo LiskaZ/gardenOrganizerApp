@@ -1,28 +1,35 @@
 package com.garden.gardenorganizerapp.dataobjects;
 
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBField;
 import com.garden.gardenorganizerapp.db.DBConnection;
 import javafx.scene.paint.Color;
 
+@DBEntity(tableName = "Item")
 public class Item extends DBObject{
 
+    @DBField(name = "PlantingArea_ID")
     private int plantingAreaId = DBConnection.INVALID_ID;
 
+    @DBField(name = "Color")
     private Color color;
 
+    @DBField(name = "Variety_ID")
     private Integer variety_ID;
 
+    @DBField(name = "Environment_ID")
     private Integer environment_ID;
 
+    @DBField(name = "Anzahl")
     private int count;
 
-    public Item(Color color, Integer variety_ID, Integer environment_ID, int count) {
-        this.color = color;
-        this.variety_ID = variety_ID;
-        this.environment_ID = environment_ID;
-        this.count = count;
-    }
+    @DBFKEntity(name= "Item_ID")
+    private Item item;
 
-    public void setPlantingAreaId(int plantingAreaId) {
+    public Item getItem() { return item; }
+
+       public void setPlantingAreaId(int plantingAreaId) {
         this.plantingAreaId = plantingAreaId;
     }
 
