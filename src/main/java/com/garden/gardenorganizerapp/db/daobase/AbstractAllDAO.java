@@ -11,7 +11,12 @@ public abstract class AbstractAllDAO<T extends DBObject> extends AbstractDAO<T> 
         super(obj);
     }
 
+    @Override
     public Vector<T> loadAll(){
-        return loadInternal(DBConnection.INVALID_ID);
+        return loadInternal(DBConnection.INVALID_ID, EAGER);
+    }
+    @Override
+    public Vector<T> loadAllLazy(){
+        return loadInternal(DBConnection.INVALID_ID, LAZY);
     }
 }

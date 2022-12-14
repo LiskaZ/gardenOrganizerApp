@@ -36,7 +36,13 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
 
     @Override
     public T load(int id) {
-        var res = loadInternal(id);
+        var res = loadInternal(id, EAGER);
+        return res.isEmpty() ? null : res.firstElement();
+    }
+
+    @Override
+    public T loadLazy(int id) {
+        var res = loadInternal(id, LAZY);
         return res.isEmpty() ? null : res.firstElement();
     }
 
@@ -66,7 +72,7 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
         int id = c.insertQuery(queryCreator.createUpdateQuery(obj));
         if(id != DBConnection.INVALID_ID)
         {
-            obj.setID(id);
+
             return true;
         }
 
@@ -86,7 +92,7 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
         return false;
     }
 
-    protected Vector<T> loadInternal(int id) {
+    protected Vector<T> loadInternal(int id, boolean eager) {
 
         Vector<T> v = new Vector<T>();
         DBConnection c = GardenApplication.getDBConnection();
@@ -96,7 +102,7 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
 
             while (res.next()) {
                 T obj = (T) infoHelper.createInstance();
-                if(obj != null && readFromResultSet(res, obj))
+                if(obj != null && readFromResultSet(res, obj, eager))
                 {
                     v.add(obj);
                 }
@@ -108,7 +114,7 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
         return v;
     }
 
-    protected boolean readFromResultSet(ResultSet res, T obj) {
+    protected boolean readFromResultSet(ResultSet res, T obj, boolean eager) {
         try {
             for (Field f : infoHelper.getAnnotationFields(DBPrimaryKey.class)) {
                 if (f.getType() == Integer.TYPE) {
@@ -125,12 +131,14 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
                     f.set(obj, s == null || s.isEmpty() ? null : Color.valueOf(s));
                 }
             }
-            for(Field f: infoHelper.getFKFields())
-            {
-                if(infoHelper.isFKFieldCascade(f)) {
-                    AbstractDAO<? extends IDAO> dao = infoHelper.createDao(f);
-                    f.setAccessible(true);
-                    f.set(obj, dao.load(res.getInt(f.getAnnotation(DBFKEntity.class).name())));
+            if(eager) {
+                for (Field f : infoHelper.getFKFields()) {
+                    if (infoHelper.isFKFieldCascade(f)) {
+                        f.setAccessible(true);
+                        AbstractDAO<? extends IDAO> dao = infoHelper.createDao(f);
+                        Object data = null;
+                        f.set(obj, dao.load(res.getInt(f.getAnnotation(DBFKEntity.class).name())));
+                    }
                 }
             }
         }

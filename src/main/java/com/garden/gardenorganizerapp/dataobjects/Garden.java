@@ -1,68 +1,81 @@
 package com.garden.gardenorganizerapp.dataobjects;
 
-import com.garden.gardenorganizerapp.db.DBConnection;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBField;
 
 import java.util.Vector;
 
-public class Garden extends DBObject {
+@DBEntity(tableName = "Garden")
+public class Garden extends DBObject{
 
-    private String name;
+    @Override
+    public String toString()
+    {
+        return getName();
+    }
+
+    @DBField(name = "Width")
     private int width;
+
+    @DBField(name = "Height")
     private int height;
-    private Vector<PlantingArea> areas;
+
+    @DBField(name = "Name")
+    private String name;
+
+    @DBField(name = "GridSize")
     private int gridSize = 20;
-    private double percentage;
+    
+    private Vector<PlantingArea> areas;
 
-
-    public Garden(int w, int h, String name, int gridSize, double percentage) {
-        this.gridSize = gridSize;
-        this.width = normalizeGrid(w);
-        this.height = normalizeGrid(h);
-        this.name = name;
-        this.areas = new Vector<PlantingArea>();
-        this.percentage = percentage;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+    public int getWidth() {
+        return width;
     }
 
     public void setWidth(int width) {
         this.width = width;
     }
 
-    public int getWidth() {
-        return width;
+    public int getHeight() {
+        return height;
     }
 
     public void setHeight(int height) {
         this.height = height;
     }
 
-    public int getHeight() {
-        return height;
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setPlantingAreas(Vector<PlantingArea> areas) {
-        this.areas = areas;
-    }
-
-    public Vector<PlantingArea> getAreas() {
-        return areas;
-    }
+    // Prozent, um die der Garten verkleinert wurde
+    private double percentage;
 
     public int getGridSize() {
         return gridSize;
     }
 
-    @Override
-    public String toString() {
-        return getName();
+    public Garden()
+    {
+        this.gridSize = 0;
+        this.width = 0;
+        this.height = 0;
+        this.name = "";
+        this.areas = new Vector<PlantingArea>();
+        this.percentage = 0.0;
+    }
+
+    public Garden(int w, int h, String name, int gridSize, double percentage)
+    {
+        this.gridSize = gridSize;
+        this.width = normalizeGrid(w);
+        this.height = normalizeGrid(h);
+        this.name = name;
+        this.areas = new Vector<PlantingArea>();
+        this.percentage = percentage;
     }
 
 
@@ -78,9 +91,18 @@ public class Garden extends DBObject {
         return (int) coord / this.gridSize;
     }
 
-    public void addPlantingArea(PlantingArea area) {
-        if (null != area) {
+    public Vector<PlantingArea> getAreas() {
+        return areas;
+    }
+
+    public void addPlantingArea(PlantingArea area)
+    {
+        if(null != area) {
             areas.add(area);
         }
+    }
+
+    public void setPlantingAreas(Vector<PlantingArea> areas) {
+        this.areas = areas;
     }
 }

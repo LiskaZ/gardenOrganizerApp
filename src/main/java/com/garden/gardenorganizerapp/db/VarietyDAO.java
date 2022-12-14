@@ -7,7 +7,6 @@ import javafx.scene.paint.Color;
 import java.util.List;
 import java.util.Vector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class VarietyDAO extends AbstractAllDAO<Variety> {
 
@@ -40,6 +39,7 @@ public class VarietyDAO extends AbstractAllDAO<Variety> {
         }
     }
 
+    // TODO implement generally, ie. load all x for y
     public List<Variety> loadVarietyForCrop(int cropID) {
         Vector<Variety> varieties = loadAll();
         return varieties.stream().filter(variety -> cropID == variety.getCrop().getID()).collect(Collectors.toUnmodifiableList());

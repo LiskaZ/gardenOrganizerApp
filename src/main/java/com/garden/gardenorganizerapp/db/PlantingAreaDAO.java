@@ -1,48 +1,31 @@
 package com.garden.gardenorganizerapp.db;
 
 import com.garden.gardenorganizerapp.GardenApplication;
-import com.garden.gardenorganizerapp.dataobjects.Item;
 import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
 import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
-import com.garden.gardenorganizerapp.db.daobase.IDAO;
+import com.garden.gardenorganizerapp.db.daobase.AbstractAllDAO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
-public class PlantingAreaDAO implements IDAO<PlantingArea> {
+public class PlantingAreaDAO extends AbstractAllDAO<PlantingArea> {
 
-    public boolean store(PlantingArea a)
-    {
-        if(DBConnection.isIdValid(a.getID())) {
-            return updateExistingArea(a);
-        }
-        else {
-            return insertNewArea(a);
-        }
-    }
-
-    @Override
-    public boolean remove(PlantingArea obj) {
-        return false;
-    }
-
-    @Override
-    public boolean remove(int id) {
-        return false;
+    public PlantingAreaDAO() {
+        super(new PlantingArea());
     }
 
     private boolean updateExistingArea(PlantingArea a) {
         DBConnection c = GardenApplication.getDBConnection();
-        String s = "UPDATE PlantingArea SET Garden_ID = " + a.getGardenId() + " WHERE ID = " + a.getID();
+        String s = "UPDATE PlantingArea SET Garden_ID = " + a.getGarden().getID() + " WHERE ID = " + a.getID();
         boolean success = false;
         if(c.query(s))
         {
             success = true;
             PlantingSpotDAO dao = new PlantingSpotDAO();
             for(PlantingSpot spot: a.getSpots()){
-                spot.setPlantingAreaId(a.getID());
+                spot.getPlantingArea().setID(a.getID());
                 success &= dao.store(spot);
             }
         }
@@ -52,7 +35,7 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
     private boolean insertNewArea(PlantingArea a)
     {
         DBConnection c = GardenApplication.getDBConnection();
-        String sql = "INSERT INTO PlantingArea (Garden_ID) VALUES (" + a.getGardenId() + ");";
+        String sql = "INSERT INTO PlantingArea (Garden_ID) VALUES (" + a.getGarden().getID() + ");";
         int id = c.insertQuery(sql);
         boolean success = false;
         if(DBConnection.isIdValid(id))
@@ -65,54 +48,14 @@ public class PlantingAreaDAO implements IDAO<PlantingArea> {
 
             PlantingSpotDAO dao = new PlantingSpotDAO();
             for(PlantingSpot spot: a.getSpots()){
-                spot.setPlantingAreaId(a.getID());
+                spot.getPlantingArea().setID(a.getID());
                 success &= dao.store(spot);
             }
         }
         return success;
     }
 
-    public PlantingArea load(int areaId)
-    {
-        return loadInternal(areaId, EAGER);
-    }
-
-    public PlantingArea loadLazy(int areaId)
-    {
-        return loadInternal(areaId, LAZY);
-    }
-
-    private PlantingArea loadInternal(int areaId, boolean eager)
-    {
-        DBConnection c = GardenApplication.getDBConnection();
-
-        PlantingArea a = null;
-
-        String sql = "SELECT Garden_ID FROM PlantingArea WHERE ID = " + areaId + ";";
-        try {
-            Statement s = c.getConnection().createStatement();
-            ResultSet res = s.executeQuery(sql);
-
-            if(res.next())
-            {
-                ItemDAO idao = new ItemDAO();
-                Item item = idao.loadForArea(areaId);
-                a = new PlantingArea(item);
-                a.setID(areaId);
-                a.setGardenId(res.getInt("Garden_ID"));
-
-                if(eager) {
-                    PlantingSpotDAO dao = new PlantingSpotDAO();
-                    a.setSpots(dao.loadForArea(areaId));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return a;
-    }
-
+    // TODO generic load
     public Vector<PlantingArea> loadForGarden(int gardenid)
     {
         DBConnection c = GardenApplication.getDBConnection();

@@ -3,7 +3,6 @@ package com.garden.gardenorganizerapp.db;
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.Item;
 import com.garden.gardenorganizerapp.db.daobase.AbstractAllDAO;
-import com.garden.gardenorganizerapp.db.daobase.IDAO;
 import javafx.scene.paint.Color;
 
 import java.sql.ResultSet;
@@ -20,15 +19,6 @@ public class ItemDAO extends AbstractAllDAO<Item> {
         return null;
     }
 
-    @Override
-    public boolean remove(Item obj) {
-        return false;
-    }
-
-    @Override
-    public boolean remove(int id) {
-        return false;
-    }
 
     // TODO Generisch umbauen
     public Item loadForArea(int areaId) {

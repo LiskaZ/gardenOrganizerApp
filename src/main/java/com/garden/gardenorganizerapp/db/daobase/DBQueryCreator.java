@@ -38,6 +38,11 @@ public class DBQueryCreator<T> {
         return s;
     }
 
+    public String createDeleteQuery(int id) {
+        return "DELETE FROM " + helper.getDbTableName() +
+                " WHERE " + helper.getPKColName() + " = " + escapeInt(id);
+    }
+
     private String getColumnStringNonNullFields(T obj) {
         String s = "";
         for (Field f : helper.getNonNullFields(obj)) {
@@ -121,8 +126,4 @@ public class DBQueryCreator<T> {
         return Integer.valueOf(integer).toString();
     }
 
-    public String createDeleteQuery(int id) {
-
-        return "DELETE FROM " + helper.getDbTableName() + " WHERE " + helper.getPKColName() + " = " + escapeInt(id);
-    }
 }
