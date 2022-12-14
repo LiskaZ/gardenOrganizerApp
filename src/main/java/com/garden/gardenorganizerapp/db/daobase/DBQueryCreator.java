@@ -102,7 +102,7 @@ public class DBQueryCreator<T> {
     private String escapeValue(Field f, T obj) {
         Object val = helper.getFieldValue(f, obj);
         if (val != null) {
-            if (f.getType() == Integer.TYPE) {
+            if (f.getType() == Integer.class || f.getType() == Integer.TYPE) {
                 return escapeInt((Integer)val);
             } else if (f.getType() == String.class) {
                 return escapeString(((String) val).toString());
