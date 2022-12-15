@@ -73,13 +73,4 @@ public class PlantingSpot extends DBObject{
     public String getDate() {
         return  plantDate.toString();
     }
-
-    }
-
-    public void setPlantingAreaId(int plantingAreaId) {
-        this.plantingAreaId = plantingAreaId;
-    }
-
-    public int getPlantingAreaId() {
-        return plantingAreaId;
 }

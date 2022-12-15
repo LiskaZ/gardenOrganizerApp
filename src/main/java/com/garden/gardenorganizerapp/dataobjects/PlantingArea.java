@@ -44,17 +44,6 @@ public class PlantingArea extends DBObject {
         this.item = item;
     }
 
-
-    public void setItem(Item item) {
-        if(item != null) {
-            this.item = item;
-        }
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
     public void setSpots(Vector<PlantingSpot> spots) {
         this.spots = spots;
     }
@@ -62,15 +51,6 @@ public class PlantingArea extends DBObject {
     public Vector<PlantingSpot> getSpots() {
         return spots;
     }
-
-    public void setGardenId(int gardenId) {
-        this.gardenId = gardenId;
-    }
-
-    public int getGardenId() {
-        return gardenId;
-    }
-
 
     public void addSpot(PlantingSpot spot) {
         this.spots.add(spot);
