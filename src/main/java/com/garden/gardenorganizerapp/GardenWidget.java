@@ -1,7 +1,6 @@
 package com.garden.gardenorganizerapp;
 
 import com.garden.gardenorganizerapp.dataobjects.*;
-import com.garden.gardenorganizerapp.db.VarietyDAO;
 import com.garden.gardenorganizerapp.viewcontrollers.GardenGridViewController;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -36,7 +35,6 @@ public class GardenWidget extends Canvas {
     public void setController(GardenGridViewController gardenGridViewController) {
         this.controller = gardenGridViewController;
     }
-
 
     public PlantingArea getCurrentPlantingArea() {
         return area;
@@ -88,12 +86,10 @@ public class GardenWidget extends Canvas {
 
     public void onMouseClicked(double x, double y) {
         if (isAllowedToHandleClick()) {
-            Point2D gridCoords =
-                    toGridCoords(x, y);
+            Point2D gridCoords = toGridCoords(x, y);
             PlantingArea containingArea = getAreaContainingSpotCoords(gridCoords);
             if (containingArea != null && containingArea.removeSpot(gridCoords)) {
                 controller.removeSpotFromDB(containingArea.getID(), new PlantingSpot(TheGarden.normalizeCoordToGrid(x), TheGarden.normalizeCoordToGrid(y)));
-
             } else {
                 addSingleSpotToPlantingArea();
             }
@@ -254,21 +250,22 @@ public class GardenWidget extends Canvas {
         double posStartX = currentMouseMoveCoordStartRec.getX();
         double posStartY = currentMouseMoveCoordStartRec.getY();
         int g = TheGarden.getGridSize();
-        if (area.getItem().getVariety_ID() == null) {
-            gc.fillRect(posStartX * g, posStartY * g, g, g);
-            this.currentMouseMoveCoordEndRec = new Point2D(posStartX + 1, posStartY + 1);
-        } else {
-            VarietyDAO dao = new VarietyDAO();
-            Variety v = dao.load(area.getItem().getVariety_ID());
-            if (hoverwidth == 0 && hoverlength == 0){
-                this.hoverlength = TheGarden.normalizeGrid(v.getPlantSpacing());
-                this.hoverwidth = TheGarden.normalizeGrid(v.getRowSpacing());
-            }
-            gc.fillRect(posStartX * g, posStartY * g, hoverlength, hoverwidth);
-            if (turned) {
-                this.currentMouseMoveCoordEndRec = new Point2D(posStartX + normalizeCoordToArea(v.getRowSpacing()), posStartY + normalizeCoordToArea(v.getPlantSpacing()));
+        if (area.getItem() != null) {
+            if (area.getItem().getVariety() == null) {
+                gc.fillRect(posStartX * g, posStartY * g, g, g);
+                this.currentMouseMoveCoordEndRec = new Point2D(posStartX + 1, posStartY + 1);
             } else {
-                this.currentMouseMoveCoordEndRec = new Point2D(posStartX + normalizeCoordToArea(v.getPlantSpacing()), posStartY + normalizeCoordToArea(v.getRowSpacing()));
+                Variety v = area.getItem().getVariety();
+                if (hoverwidth == 0 && hoverlength == 0){
+                    this.hoverlength = TheGarden.normalizeGrid(v.getPlantSpacing());
+                    this.hoverwidth = TheGarden.normalizeGrid(v.getRowSpacing());
+                }
+                gc.fillRect(posStartX * g, posStartY * g, hoverlength, hoverwidth);
+                if (turned) {
+                    this.currentMouseMoveCoordEndRec = new Point2D(posStartX + normalizeCoordToArea(v.getRowSpacing()), posStartY + normalizeCoordToArea(v.getPlantSpacing()));
+                } else {
+                    this.currentMouseMoveCoordEndRec = new Point2D(posStartX + normalizeCoordToArea(v.getPlantSpacing()), posStartY + normalizeCoordToArea(v.getRowSpacing()));
+                }
             }
         }
     }

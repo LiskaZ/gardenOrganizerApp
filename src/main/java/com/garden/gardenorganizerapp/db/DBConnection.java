@@ -6,19 +6,19 @@ public class DBConnection {
 
     public static final int INVALID_ID = -1;
 
-    private Connection connection = null;
+    private static IDBConnecter connecter = new DBConnecter();
+
+    public static void setDBConnecter(IDBConnecter connecter)
+    {
+        DBConnection.connecter = connecter;
+    }
 
     public DBConnection()
     {
     }
 
     public Connection getConnection() {
-
-        if(null == connection)
-        {
-            connection = connect();
-        }
-        return connection;
+        return connect();
     }
 
     public int insertQuery(String sql)
@@ -40,14 +40,13 @@ public class DBConnection {
         return insertId;
     }
 
-    public int deleteQuery(String sql)
+    public boolean deleteQuery(String sql)
     {
-        int deleteId = INVALID_ID;
+        boolean res = false;
         try {
             Statement s = getConnection().createStatement();
-            s.execute(sanitizeQuery(sql));
-            if(s.getUpdateCount() > 0) {
-                deleteId = lastInsertId();
+            if(!s.execute(sanitizeQuery(sql)) && s.getUpdateCount() >= 0) {
+                res = true;
             }
             //close();
         }
@@ -55,7 +54,7 @@ public class DBConnection {
             e.printStackTrace();
         }
 
-        return deleteId;
+        return res;
     }
 
     public boolean query(String sql)
@@ -64,7 +63,7 @@ public class DBConnection {
         try {
             Statement s = getConnection().createStatement();
             if(!s.execute(sanitizeQuery(sql))) {
-                if (s.getUpdateCount() > 0)
+                if (s.getUpdateCount() >= 0)
                 {
                     res = true;
                 }
@@ -81,17 +80,7 @@ public class DBConnection {
     }
 
     private Connection connect() {
-        Connection conn = null;
-        try {
-            // db parameters
-            String url = "jdbc:sqlite:garden.db";
-            // create a connection to the database
-            conn = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return conn;
+        return DBConnection.connecter.connect();
     }
 
     public static boolean isIdValid(int id)
@@ -101,38 +90,23 @@ public class DBConnection {
 
     private int lastInsertId()
     {
-        if(null != connection)
-        {
-            try {
-                Statement s = connection.createStatement();
-                ResultSet set = s.executeQuery(sanitizeQuery("SELECT last_insert_rowid() as id"));
-                if(set.next())
-                {
-                    return set.getInt("id");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+        try {
+            Statement s = getConnection().createStatement();
+            ResultSet set = s.executeQuery(sanitizeQuery("SELECT last_insert_rowid() as id"));
+            if(set.next())
+            {
+                return set.getInt("id");
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        return INVALID_ID;
+        return DBConnection.INVALID_ID;
     }
 
     public boolean close()
     {
-        boolean res = false;
-        if(null != connection)
-        {
-            try {
-                connection.close();
-                connection = null;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            res = true;
-        }
-
-        return res;
+        return connecter.disconnect();
     }
 
     private String sanitizeQuery(String s)

@@ -1,16 +1,39 @@
 package com.garden.gardenorganizerapp.dataobjects;
 
-import com.garden.gardenorganizerapp.db.DBConnection;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntity;
 import javafx.geometry.Point2D;
 
 import java.util.Vector;
 
+@DBEntity(tableName = "PlantingArea")
 public class PlantingArea extends DBObject {
 
-    private Item item;
-    private Vector<PlantingSpot> spots;
-    private int gardenId = DBConnection.INVALID_ID;
+    @DBFKEntity(name = "Garden_ID", cascade = false)
+    private Garden garden;
 
+    @DBFKEntity(name = "Item_ID")
+    private Item item;
+
+    public Garden getGarden() {
+        return garden;
+    }
+
+    public void setGarden(Garden garden) {
+        this.garden = garden;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        if(item != null) {
+            this.item = item;
+        }
+    }
+
+    private Vector<PlantingSpot> spots;
 
     public PlantingArea() {
         this.spots = new Vector<>();
@@ -21,17 +44,6 @@ public class PlantingArea extends DBObject {
         this.item = item;
     }
 
-
-    public void setItem(Item item) {
-        if(item != null) {
-            this.item = item;
-        }
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
     public void setSpots(Vector<PlantingSpot> spots) {
         this.spots = spots;
     }
@@ -39,15 +51,6 @@ public class PlantingArea extends DBObject {
     public Vector<PlantingSpot> getSpots() {
         return spots;
     }
-
-    public void setGardenId(int gardenId) {
-        this.gardenId = gardenId;
-    }
-
-    public int getGardenId() {
-        return gardenId;
-    }
-
 
     public void addSpot(PlantingSpot spot) {
         this.spots.add(spot);

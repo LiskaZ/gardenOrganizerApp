@@ -1,7 +1,7 @@
 package com.garden.gardenorganizerapp.viewcontrollers;
 
-import com.garden.gardenorganizerapp.dataobjects.*;
 import com.garden.gardenorganizerapp.GardenWidget;
+import com.garden.gardenorganizerapp.dataobjects.*;
 import com.garden.gardenorganizerapp.db.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,7 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Vector;
 
 public class GardenGridViewController implements IViewController {
 
@@ -116,7 +117,7 @@ public class GardenGridViewController implements IViewController {
     private void loadVarietyItem(Variety selectedVariety) {
         if (selectedVariety != null) {
             Item item = new Item();
-            item.setVariety_ID(selectedVariety.getID());
+            item.setVariety(selectedVariety);
             item.setColor(selectedVariety.getDefaultColor());
             gardenWidget.setItemInPlantingArea(item);
         }
@@ -134,7 +135,7 @@ public class GardenGridViewController implements IViewController {
                 int s = Integer.parseInt(envButton.getId().split("_")[1]);
                 Item item = new Item();
                 item.setColor(env.getColor());
-                item.setEnvironment_ID(s);
+                item.setEnvironment(env);
                 item.setCount(1);
                 gardenWidget.setItemInPlantingArea(item);
             });
@@ -155,7 +156,7 @@ public class GardenGridViewController implements IViewController {
     //TODO Spot hier wirklich entfernen oder Pflanze entfernen??
     public void removeSpotFromDB(int areaID, PlantingSpot gridCoords) {
         PlantingSpotDAO dao = new PlantingSpotDAO();
-        dao.removeSpot(areaID, gridCoords);
+        dao.remove(gridCoords);
     }
 
     public void turnItem(ActionEvent actionEvent) {

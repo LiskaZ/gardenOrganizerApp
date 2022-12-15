@@ -1,21 +1,57 @@
 package com.garden.gardenorganizerapp.dataobjects;
 
-import com.garden.gardenorganizerapp.db.DBConnection;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBField;
 
 import java.time.LocalDate;
 
+@DBEntity(tableName = "PlantingSpot")
 public class PlantingSpot extends DBObject{
 
+    @DBField(name = "x")
     private int x;
+    @DBField(name = "y")
     private int y;
-    private LocalDate date;
+    @DBField(name = "PlantDate")
+    private LocalDate plantDate;
+    @DBField(name = "EndDate")
+    private LocalDate endDate;
 
-    private int plantingAreaId = DBConnection.INVALID_ID;
+    @DBFKEntity(name = "PlantingArea_ID")
+    private PlantingArea plantingArea;
+
+    public LocalDate getPlantDate() {
+        return plantDate;
+    }
+
+    public void setPlantDate(LocalDate plantDate) {
+        this.plantDate = plantDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public PlantingArea getPlantingArea() {
+        return plantingArea;
+    }
+
+    public void setPlantingArea(PlantingArea plantingArea) {
+        this.plantingArea = plantingArea;
+    }
+
+    public PlantingSpot() {
+    }
 
     public PlantingSpot(int x, int y) {
         this.x = x;
         this.y = y;
-        this.date = LocalDate.now();
+        this.plantDate = LocalDate.now();
     }
 
     public void setX(int x) {
@@ -35,18 +71,6 @@ public class PlantingSpot extends DBObject{
     }
 
     public String getDate() {
-        return  date.toString();
-    }
-
-    public void setDate(LocalDate plantDate) {
-        this.date = plantDate;
-    }
-
-    public void setPlantingAreaId(int plantingAreaId) {
-        this.plantingAreaId = plantingAreaId;
-    }
-
-    public int getPlantingAreaId() {
-        return plantingAreaId;
+        return  plantDate.toString();
     }
 }
