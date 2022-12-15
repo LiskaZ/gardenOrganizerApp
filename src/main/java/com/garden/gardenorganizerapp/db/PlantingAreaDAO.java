@@ -33,29 +33,6 @@ public class PlantingAreaDAO extends AbstractDAO<PlantingArea> implements IDAO<P
         return success;
     }
 
-    private boolean insertNewArea(PlantingArea a)
-    {
-        DBConnection c = GardenApplication.getDBConnection();
-        String sql = "INSERT INTO PlantingArea (Garden_ID) VALUES (" + a.getGarden().getID() + ");";
-        int id = c.insertQuery(sql);
-        boolean success = false;
-        if(DBConnection.isIdValid(id))
-        {
-            success = true;
-            a.setID(id);
-            ItemDAO idao = new ItemDAO();
-            a.getItem().setPlantingAreaId(id);
-            success &= idao.store(a.getItem());
-
-            PlantingSpotDAO dao = new PlantingSpotDAO();
-            for(PlantingSpot spot: a.getSpots()){
-                spot.getPlantingArea().setID(a.getID());
-                success &= dao.store(spot);
-            }
-        }
-        return success;
-    }
-
     // TODO generic load
     public Vector<PlantingArea> loadForGarden(int gardenid)
     {
