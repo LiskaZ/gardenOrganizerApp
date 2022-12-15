@@ -12,6 +12,9 @@ public class PlantingArea extends DBObject {
     @DBFKEntity(name = "Garden_ID", cascade = false)
     private Garden garden;
 
+    @DBFKEntity(name = "Item_ID")
+    private Item item;
+
     public Garden getGarden() {
         return garden;
     }
@@ -29,9 +32,6 @@ public class PlantingArea extends DBObject {
             this.item = item;
         }
     }
-
-    //@DBFKEntity(name = "Item_ID")
-    private Item item;
 
     private Vector<PlantingSpot> spots;
 
