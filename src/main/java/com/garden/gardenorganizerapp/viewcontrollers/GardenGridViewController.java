@@ -157,4 +157,9 @@ public class GardenGridViewController implements IViewController {
         PlantingSpotDAO dao = new PlantingSpotDAO();
         dao.removeSpot(areaID, gridCoords);
     }
+
+    public void turnItem(ActionEvent actionEvent) {
+        gardenWidget.turnHoverRect();
+        gardenWidget.drawGarden();
+    }
 }

@@ -12,6 +12,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuBar;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 
@@ -48,6 +49,8 @@ public class SelectExistingGardenViewController implements IViewController{
             try {
                 GardenDAO d1 = new GardenDAO();
                 Garden garden = d1.load(newObj.getID());
+                File directory = new File("./");
+                System.out.println(directory.getAbsolutePath());
                 ViewLoader<GardenGridViewController> l = new ViewLoader<>("garden-grid-view.fxml");
                 l.getController().setGarden(garden);
             } catch (IOException e) {

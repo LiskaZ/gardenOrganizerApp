@@ -5,6 +5,8 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <BorderPane style="-fx-background-color: green;" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.garden.gardenorganizerapp.viewcontrollers.GardenGridViewController">
     <top>
         <MenuBar fx:id="menuBar" />
@@ -30,7 +32,18 @@
                 </valueFactory>
             </Spinner>
             <Label fx:id="recPlantCount" prefWidth="124.0">Empfohlen: </Label>
-            <Button id="addPlants" fx:id="addPlants" onAction="#onAddPlantsClick" prefWidth="124.0" text="Item platzieren" />
+            <HBox>
+                <Button fx:id="addPlants" onAction="#onAddPlantsClick" prefWidth="110.0" text="Item platzieren" />
+                <Button fx:id="turnItem" mnemonicParsing="false" onAction="#turnItem">
+                    <graphic>
+                        <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="https://cdn2.vectorstock.com/i/1000x1000/53/96/rotate-icon-vector-10875396.jpg" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
         </VBox>
     </left>
     <bottom>

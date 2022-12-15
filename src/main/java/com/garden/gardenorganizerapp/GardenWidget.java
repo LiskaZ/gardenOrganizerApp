@@ -22,6 +22,10 @@ public class GardenWidget extends Canvas {
     private Point2D currentMouseMoveCoordStartRec = null;
     private Point2D currentMouseMoveCoordEndRec = null;
 
+    private int hoverlength = 0;
+    private int hoverwidth = 0;
+    private boolean turned = false;
+
     public GardenWidget(Garden garden) {
         super(garden.getWidth(), garden.getHeight());
         this.TheGarden = garden;
@@ -47,6 +51,8 @@ public class GardenWidget extends Canvas {
             activateGridActions();
         }
         this.area.setItem(item);
+        hoverwidth = 0;
+        hoverlength = 0;
     }
 
     public void activateGridActions() {
@@ -165,8 +171,8 @@ public class GardenWidget extends Canvas {
         }
     }
 
-    
-    private void drawGarden() {
+
+    public void drawGarden() {
         drawGrid();
         drawSelectionRect();
         drawPlantingAreas();
@@ -254,10 +260,16 @@ public class GardenWidget extends Canvas {
         } else {
             VarietyDAO dao = new VarietyDAO();
             Variety v = dao.load(area.getItem().getVariety_ID());
-            int size = TheGarden.normalizeGrid(v.getPlantSpacing());
-            int row = TheGarden.normalizeGrid(v.getRowSpacing());
-            gc.fillRect(posStartX * g, posStartY * g, size, row);
-            this.currentMouseMoveCoordEndRec = new Point2D(posStartX + normalizeCoordToArea(v.getPlantSpacing()), posStartY + normalizeCoordToArea(v.getRowSpacing()));
+            if (hoverwidth == 0 && hoverlength == 0){
+                this.hoverlength = TheGarden.normalizeGrid(v.getPlantSpacing());
+                this.hoverwidth = TheGarden.normalizeGrid(v.getRowSpacing());
+            }
+            gc.fillRect(posStartX * g, posStartY * g, hoverlength, hoverwidth);
+            if (turned) {
+                this.currentMouseMoveCoordEndRec = new Point2D(posStartX + normalizeCoordToArea(v.getRowSpacing()), posStartY + normalizeCoordToArea(v.getPlantSpacing()));
+            } else {
+                this.currentMouseMoveCoordEndRec = new Point2D(posStartX + normalizeCoordToArea(v.getPlantSpacing()), posStartY + normalizeCoordToArea(v.getRowSpacing()));
+            }
         }
     }
 
@@ -266,6 +278,17 @@ public class GardenWidget extends Canvas {
             return (int) n / TheGarden.getGridSize();
         } else {
             return (int) n / TheGarden.getGridSize() + 1;
+        }
+    }
+
+    public void turnHoverRect() {
+        int turner = hoverlength;
+        hoverlength = hoverwidth;
+        hoverwidth = turner;
+        if (turned) {
+            turned = false;
+        } else {
+            turned = true;
         }
     }
 }
