@@ -3,9 +3,12 @@ package com.garden.gardenorganizerapp;
 import com.garden.gardenorganizerapp.dataobjects.*;
 import com.garden.gardenorganizerapp.db.VarietyDAO;
 import com.garden.gardenorganizerapp.viewcontrollers.GardenGridViewController;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
@@ -15,11 +18,9 @@ public class GardenWidget extends Canvas {
     private Garden TheGarden;
 
     private Point2D mouseDraggingStartCoord = null;
-
     private Point2D currentMouseCoord = null;
     private Point2D currentMouseMoveCoordStartRec = null;
     private Point2D currentMouseMoveCoordEndRec = null;
-
 
     private PlantingArea area = new PlantingArea();
 
@@ -32,7 +33,16 @@ public class GardenWidget extends Canvas {
 
             setOnMouseDragged(e -> onMouseDragged(e.getX(), e.getY()));
 
+
             setOnMouseReleased(e -> onMouseReleased());
+
+            setOnScroll(e -> System.out.println("Mausrad gerdreht"));
+
+            setOnKeyTyped(e ->{
+                    if (e.getCode() == KeyCode.T) {
+                        System.out.println("Key pressed");
+                    }
+            });
         }
         this.area.setItem(item);
     }
@@ -199,7 +209,15 @@ public class GardenWidget extends Canvas {
             int size = TheGarden.normalizeGrid(v.getPlantSpacing());
             int row = TheGarden.normalizeGrid(v.getRowSpacing());
             gc.fillRect(posStartX * g, posStartY * g, size, row);
-            this.currentMouseMoveCoordEndRec = new Point2D(posStartX + TheGarden.normalizeCoordToGrid(v.getPlantSpacing()), posStartY + TheGarden.normalizeCoordToGrid(v.getRowSpacing()));
+            this.currentMouseMoveCoordEndRec = new Point2D(posStartX + normalizeCoordToArea(v.getPlantSpacing()), posStartY + normalizeCoordToArea(v.getRowSpacing()));
+        }
+    }
+
+    private int normalizeCoordToArea(double n) {
+        if (n % TheGarden.getGridSize() == 0) {
+            return (int) n / TheGarden.getGridSize();
+        } else {
+            return (int) n / TheGarden.getGridSize() + 1;
         }
     }
 

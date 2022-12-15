@@ -4,9 +4,7 @@ import com.garden.gardenorganizerapp.ViewLoader;
 import com.garden.gardenorganizerapp.dataobjects.Garden;
 import com.garden.gardenorganizerapp.db.GardenDAO;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -29,7 +27,7 @@ public class SelectExistingGardenViewController implements IViewController{
     @FXML
     private MenuBar menuBar;
 
-    public SelectExistingGardenViewController() throws IOException {
+    public SelectExistingGardenViewController() {
 
     }
 
@@ -42,23 +40,18 @@ public class SelectExistingGardenViewController implements IViewController{
         GardenDAO d = new GardenDAO();
         Vector<Garden> gardens = d.loadAllLazy();
 
-        ObservableList observableList = FXCollections.observableArrayList();
-        for(Garden g: gardens) {
-            observableList.add(g);
-        }
+        var observableList = FXCollections.observableArrayList();
+        observableList.addAll(gardens);
         gardenList.setItems(observableList);
 
-        gardenList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Garden>() {
-            @Override
-            public void changed(ObservableValue observableValue, Garden old, Garden newObj) {
-                try {
-                    GardenDAO d = new GardenDAO();
-                    Garden garden = d.load(newObj.getID());
-                    ViewLoader<GardenGridViewController> l = new ViewLoader<GardenGridViewController>("garden-grid-view.fxml");
-                    l.getController().setGarden(garden);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        gardenList.getSelectionModel().selectedItemProperty().addListener((ChangeListener<Garden>) (observableValue, old, newObj) -> {
+            try {
+                GardenDAO d1 = new GardenDAO();
+                Garden garden = d1.load(newObj.getID());
+                ViewLoader<GardenGridViewController> l = new ViewLoader<>("garden-grid-view.fxml");
+                l.getController().setGarden(garden);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         });
     }

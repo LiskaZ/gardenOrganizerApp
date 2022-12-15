@@ -17,7 +17,6 @@ import static java.lang.Integer.parseInt;
 
 public class NewGardenViewController implements IViewController{
 
-    private Scene gardenScene;
 
     @FXML
     private MenuBar menuBar;
@@ -34,9 +33,7 @@ public class NewGardenViewController implements IViewController{
     @FXML
     private TextField gridSizeIntegerField;
 
-    @FXML
-    private Button createGarden;
-
+    private Scene gardenScene;
     private int sceneSize;
 
     public NewGardenViewController() {}

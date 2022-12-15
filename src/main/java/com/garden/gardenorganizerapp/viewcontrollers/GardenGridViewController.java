@@ -6,7 +6,6 @@ import com.garden.gardenorganizerapp.db.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,7 +17,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class GardenGridViewController implements IViewController {
 
@@ -58,6 +56,21 @@ public class GardenGridViewController implements IViewController {
     public GardenGridViewController() throws IOException {
     }
 
+    public void setGarden(Garden garden) {
+        this.garden = garden;
+        gardenWidget = new GardenWidget(this.garden);
+        gardenWidget.setController(this);
+        createGardenLayer();
+    }
+
+    public void createGardenLayer() {
+
+        gardenCanvas.getChildren().add(gardenWidget);
+        this.gardenScene.setFill(Color.GREEN);
+
+        stage.setTitle(this.garden.getName());
+    }
+
     public void createScene(Parent gardenSettingsLayer, Stage s, int sceneSize) {
         this.stage = s;
         this.gardenSettingsLayer = (BorderPane) gardenSettingsLayer;
@@ -65,51 +78,8 @@ public class GardenGridViewController implements IViewController {
         s.setScene(gardenScene);
         createMenu(menuBar);
         loadCrops();
-        loadEnvironment();
         loadVariety(1);
-    }
-
-    private void loadVariety(int cropID) {
-        VarietyDAO vDao = new VarietyDAO();
-        ArrayList<Variety> varietyNames = new ArrayList<>();
-        varietyNames.addAll(vDao.loadVarietyForCrop(cropID));
-
-        ObservableList<Variety> varietyItems = FXCollections.observableArrayList(varietyNames);
-        varietyList.setItems(varietyItems);
-        varietyList.getSelectionModel().select(0);
-        varietyList.getSelectionModel().selectedItemProperty().addListener(x -> {
-            Variety selectedVariety = (Variety) varietyList.getSelectionModel().getSelectedItem();
-            onVarietyClicked(selectedVariety);
-        });
-    }
-
-    private void onVarietyClicked(Variety selectedVariety) {
-        if (selectedVariety != null) {
-            Item item = new Item();
-            item.setVariety_ID(selectedVariety.getID());
-            item.setColor(selectedVariety.getDefaultColor());
-            gardenWidget.setItem(item);
-        }
-    }
-
-    private void loadEnvironment() {
-
-        EnvironmentDAO dao = new EnvironmentDAO();
-        Vector<Environment> environments = dao.loadAll();
-        for (Environment env : environments) {
-            Button envButton = new Button(env.getName());
-            envButton.setPrefWidth(124.0);
-            envButton.setId(String.format("envButton_%d", env.getID()));
-            envButton.setOnAction(e -> {
-                int s = Integer.parseInt(envButton.getId().split("_")[1]);
-                Item item = new Item();
-                item.setColor(env.getColor());
-                item.setEnvironment_ID(s);
-                item.setCount(1);
-                gardenWidget.setItem(item);
-            });
-            buttonLayout.getChildren().add(envButton);
-        }
+        loadEnvironmentItem();
     }
 
     private void loadCrops() {
@@ -129,19 +99,47 @@ public class GardenGridViewController implements IViewController {
         });
     }
 
-    public void setGarden(Garden garden) {
-        this.garden = garden;
-        gardenWidget = new GardenWidget(this.garden);
-        gardenWidget.setController(this);
-        createGardenLayer();
+    private void loadVariety(int cropID) {
+        VarietyDAO vDao = new VarietyDAO();
+        ArrayList<Variety> varietyNames = new ArrayList<>();
+        varietyNames.addAll(vDao.loadVarietyForCrop(cropID));
+
+        ObservableList<Variety> varietyItems = FXCollections.observableArrayList(varietyNames);
+        varietyList.setItems(varietyItems);
+        varietyList.getSelectionModel().select(0);
+        varietyList.getSelectionModel().selectedItemProperty().addListener(x -> {
+            Variety selectedVariety = (Variety) varietyList.getSelectionModel().getSelectedItem();
+            loadVarietyItem(selectedVariety);
+        });
     }
 
-    public void createGardenLayer() {
+    private void loadVarietyItem(Variety selectedVariety) {
+        if (selectedVariety != null) {
+            Item item = new Item();
+            item.setVariety_ID(selectedVariety.getID());
+            item.setColor(selectedVariety.getDefaultColor());
+            gardenWidget.setItem(item);
+        }
+    }
 
-        gardenCanvas.getChildren().add(gardenWidget);
-        this.gardenScene.setFill(Color.GREEN);
+    private void loadEnvironmentItem() {
 
-        stage.setTitle(this.garden.getName());
+        EnvironmentDAO dao = new EnvironmentDAO();
+        Vector<Environment> environments = dao.loadAll();
+        for (Environment env : environments) {
+            Button envButton = new Button(env.getName());
+            envButton.setPrefWidth(124.0);
+            envButton.setId(String.format("envButton_%d", env.getID()));
+            envButton.setOnAction(e -> {
+                int s = Integer.parseInt(envButton.getId().split("_")[1]);
+                Item item = new Item();
+                item.setColor(env.getColor());
+                item.setEnvironment_ID(s);
+                item.setCount(1);
+                gardenWidget.setItem(item);
+            });
+            buttonLayout.getChildren().add(envButton);
+        }
     }
 
     public void onAddPlantsClick(ActionEvent actionEvent) {
