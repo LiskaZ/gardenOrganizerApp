@@ -7,35 +7,108 @@ CREATE TABLE IF NOT EXISTS "Garden" (
 	"GridSize"	INTEGER NOT NULL,
 	PRIMARY KEY("ID" AUTOINCREMENT)
 );
-CREATE TABLE IF NOT EXISTS "PlantingSpot" (
+CREATE TABLE IF NOT EXISTS "Vermin" (
 	"ID"	INTEGER,
-	"PlantingArea_ID"	INTEGER NOT NULL,
-	"x"	INTEGER NOT NULL,
-	"y"	INTEGER NOT NULL,
-	"Color"	TEXT,
+	"Name"	INTEGER,
+	"Description"	TEXT,
+	"Pics"	BLOB,
+	"Cure"	TEXT,
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "Sickness" (
+	"ID"	INTEGER,
+	"Name"	INTEGER,
+	"Description"	TEXT,
+	"Pics"	BLOB,
+	"Cure"	TEXT,
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "Variety_Sickness" (
+	"Variety_ID"	INTEGER,
+	"Sickness_ID"	INTEGER,
+	FOREIGN KEY("Sickness_ID") REFERENCES "Sickness"("ID"),
+	FOREIGN KEY("Variety_ID") REFERENCES "Variety"("ID")
+);
+CREATE TABLE IF NOT EXISTS "Variety_Vermin" (
+	"Variety_ID"	INTEGER,
+	"Vermin_ID"	INTEGER,
+	FOREIGN KEY("Vermin_ID") REFERENCES "Vermin"("ID"),
+	FOREIGN KEY("Variety_ID") REFERENCES "Variety"("ID")
+);
+CREATE TABLE IF NOT EXISTS "Unit" (
+	"ID"	INTEGER,
+	"Description"	TEXT,
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "Harvest" (
+	"ID"	INTEGER,
+	"Date"	TEXT,
+	"Quantity"	INTEGER,
+	"QuantityUnit_ID"	INTEGER,
+	"PlantingArea_ID"	INTEGER,
+	"Crop_ID"	INTEGER,
+	FOREIGN KEY("QuantityUnit_ID") REFERENCES "Unit"("ID"),
+	FOREIGN KEY("Crop_ID") REFERENCES "Crop"("ID"),
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "Environment" (
+	"ID"	INTEGER,
+	"Name"	TEXT NOT NULL,
+	"Defaultcolor"	TEXT NOT NULL,
 	PRIMARY KEY("ID" AUTOINCREMENT)
 );
 CREATE TABLE IF NOT EXISTS "PlantingArea" (
 	"ID"	INTEGER,
 	"Garden_ID"	INTEGER NOT NULL,
-	PRIMARY KEY("ID" AUTOINCREMENT),
-	FOREIGN KEY("Garden_ID") REFERENCES "Garden"("ID")
-);
-CREATE TABLE IF NOT EXISTS "PlantedPlant" (
-	"ID"	INTEGER,
-	"PlantingSpot_ID"	INTEGER NOT NULL,
-	"Plant_ID"	INTEGER NOT NULL,
-	PRIMARY KEY("ID" AUTOINCREMENT),
-	FOREIGN KEY("PlantingSpot_ID") REFERENCES "PlantingSpot"("ID")
-);
-CREATE TABLE IF NOT EXISTS "Plants" (
-	"ID"	INTEGER,
-	"Name"	TEXT,
-	"DefaultColor"	INTEGER,
+	FOREIGN KEY("Garden_ID") REFERENCES "Garden"("ID"),
 	PRIMARY KEY("ID" AUTOINCREMENT)
 );
-INSERT INTO "Garden" ("ID","Name","Width","Height","GridSize") VALUES (32,'Hallo',80,80,20);
-INSERT INTO "PlantingSpot" ("ID","PlantingArea_ID","x","y","Color") VALUES (190,1,1,1,'0x9acd32ff');
-INSERT INTO "PlantingSpot" ("ID","PlantingArea_ID","x","y","Color") VALUES (191,1,2,1,'0x9acd32ff');
-INSERT INTO "PlantingArea" ("ID","Garden_ID") VALUES (1,32);
+CREATE TABLE IF NOT EXISTS "Variety" (
+	"ID"	INTEGER,
+	"Crop_ID"	INTEGER NOT NULL,
+	"Name"	TEXT NOT NULL,
+	"Harvesttime_Begin"	TEXT,
+	"Harvesttime_End"	TEXT,
+	"Sowingtime_Begin"	TEXT,
+	"Sowingtime_End"	TEXT,
+	"PlantSpacing"	INTEGER,
+	"RowSpacing"	INTEGER,
+	"Size"	INTEGER,
+	"SeedingDepth"	INTEGER,
+	"SeedingTemp"	INTEGER,
+	"SeedingBedDepth"	INTEGER,
+	"Defaultcolor"	TEXT,
+	FOREIGN KEY("Crop_ID") REFERENCES "Crop"("ID"),
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "Crop" (
+	"ID"	INTEGER,
+	"Name"	TEXT NOT NULL UNIQUE,
+	"Defaultcolor"	TEXT,
+	"DefaultVariety_ID"	INTEGER,
+	FOREIGN KEY("DefaultVariety_ID") REFERENCES "Variety"("ID"),
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "Item" (
+	"ID"	INTEGER,
+	"Color"	TEXT,
+	"Variety_ID"	INTEGER,
+	"Environment_ID"	INTEGER,
+	"PlantingArea_ID"	INTEGER,
+	"Anzahl"	INTEGER,
+	FOREIGN KEY("PlantingArea_ID") REFERENCES "PlantingArea"("ID"),
+	FOREIGN KEY("Environment_ID") REFERENCES "Environment"("ID"),
+	FOREIGN KEY("Variety_ID") REFERENCES "Variety"("ID"),
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "PlantingSpot" (
+	"ID"	INTEGER,
+	"PlantingArea_ID"	INTEGER NOT NULL,
+	"x"	INTEGER NOT NULL,
+	"y"	INTEGER NOT NULL,
+	"PlantDate"	TEXT NOT NULL,
+	"EndDate"	TEXT,
+	FOREIGN KEY("PlantingArea_ID") REFERENCES "PlantingArea"("ID"),
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);
 COMMIT;

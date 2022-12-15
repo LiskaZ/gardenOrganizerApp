@@ -1,6 +1,7 @@
 package com.garden.gardenorganizerapp.dataobjects;
 
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntityList;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBField;
 
 import java.util.Vector;
@@ -25,7 +26,8 @@ public class Garden extends DBObject{
 
     @DBField(name = "GridSize")
     private int gridSize = 20;
-    
+
+    @DBFKEntityList(foreignType = PlantingArea.class)
     private Vector<PlantingArea> areas;
 
     public int getWidth() {

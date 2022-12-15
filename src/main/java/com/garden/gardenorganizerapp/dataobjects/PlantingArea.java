@@ -1,13 +1,15 @@
 package com.garden.gardenorganizerapp.dataobjects;
 
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBEntity;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntity;
 import javafx.geometry.Point2D;
 
 import java.util.Vector;
 
+@DBEntity(tableName = "PlantingArea")
 public class PlantingArea extends DBObject {
 
-    @DBFKEntity(name = "Garden_ID")
+    @DBFKEntity(name = "Garden_ID", cascade = false)
     private Garden garden;
 
     public Garden getGarden() {
@@ -28,9 +30,8 @@ public class PlantingArea extends DBObject {
         }
     }
 
-    @DBFKEntity(name = "Item_ID")
+    //@DBFKEntity(name = "Item_ID")
     private Item item;
-
 
     private Vector<PlantingSpot> spots;
 

@@ -1,11 +1,12 @@
 package com.garden.gardenorganizerapp.db;
 
 import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
-import com.garden.gardenorganizerapp.db.daobase.AbstractAllDAO;
+import com.garden.gardenorganizerapp.db.daobase.AbstractDAO;
+import com.garden.gardenorganizerapp.db.daobase.IDAO;
 
 import java.util.Vector;
 
-public class PlantingSpotDAO extends AbstractAllDAO<PlantingSpot> {
+public class PlantingSpotDAO extends AbstractDAO<PlantingSpot> implements IDAO<PlantingSpot> {
 
     public PlantingSpotDAO()
     {

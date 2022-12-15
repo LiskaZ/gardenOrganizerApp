@@ -1,14 +1,15 @@
 package com.garden.gardenorganizerapp.db;
 
 import com.garden.gardenorganizerapp.dataobjects.Variety;
-import com.garden.gardenorganizerapp.db.daobase.AbstractAllDAO;
+import com.garden.gardenorganizerapp.db.daobase.AbstractDAO;
+import com.garden.gardenorganizerapp.db.daobase.IDAO;
 import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
-public class VarietyDAO extends AbstractAllDAO<Variety> {
+public class VarietyDAO extends AbstractDAO<Variety> implements IDAO<Variety> {
 
     public VarietyDAO()
     {

@@ -2,32 +2,13 @@ package com.garden.gardenorganizerapp.db;
 
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.Environment;
-import com.garden.gardenorganizerapp.db.daobase.IAllDAO;
-import javafx.scene.paint.Color;
+import com.garden.gardenorganizerapp.db.daobase.AbstractDAO;
+import com.garden.gardenorganizerapp.db.daobase.IDAO;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Vector;
+public class EnvironmentDAO extends AbstractDAO<Environment> implements IDAO<Environment> {
 
-public class EnvironmentDAO implements IAllDAO<Environment> {
-
-    public boolean store(Environment i) {
-        if(DBConnection.isIdValid(i.getID())) {
-            return updateExistingEnvironmentEnvironment(i);
-        }
-        else {
-            return insertNewEnvironmentEnvironment(i);
-        }
-    }
-
-    @Override
-    public boolean remove(Environment obj) {
-        return false;
-    }
-
-    @Override
-    public boolean remove(int id) {
-        return false;
+    public EnvironmentDAO() {
+        super(new Environment());
     }
 
     private boolean updateExistingEnvironmentEnvironment(Environment env) {
@@ -47,52 +28,5 @@ public class EnvironmentDAO implements IAllDAO<Environment> {
         int id = c.insertQuery(sql);
         env.setID(id);
         return c.isIdValid(id);
-    }
-
-    private Vector<Environment> loadInternal(boolean eager, int id)
-    {
-        DBConnection c = GardenApplication.getDBConnection();
-
-        Vector<Environment> envs = new Vector<Environment>();
-
-        String sql = "SELECT ID, Name, Defaultcolor FROM Environment";
-        if(DBConnection.isIdValid(id))
-        {
-            sql += " WHERE ID = " + id + " LIMIT 1";
-        }
-        try {
-            ResultSet res = c.selectQuery(sql);
-
-            while(res.next())
-            {
-                Environment env = new Environment(
-                        res.getString("Name"),
-                        Color.valueOf(res.getString("Defaultcolor")));
-                env.setID(res.getInt("ID"));
-
-                envs.add(env);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return envs;
-    }
-
-    public Environment load(int envID) {
-        Vector<Environment> envs = loadInternal(EAGER, envID);
-        return envs.isEmpty() ? null : envs.firstElement();
-    }
-
-    public Environment loadLazy(int envID) {
-        return load(envID);
-    }
-
-    public Vector<Environment> loadAll() {
-        return loadInternal(EAGER, DBConnection.INVALID_ID);
-    }
-
-    public Vector<Environment> loadAllLazy() {
-        return loadAll();
     }
 }

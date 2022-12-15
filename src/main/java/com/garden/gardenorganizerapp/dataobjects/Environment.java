@@ -10,6 +10,9 @@ public class Environment extends DBObject{
     private int environmentId = DBConnection.INVALID_ID;
 
 
+    public Environment() {
+    }
+    
     public Environment(String name, Color color) {
         this.name = name;
         this.color = color;

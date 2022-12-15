@@ -3,14 +3,15 @@ package com.garden.gardenorganizerapp.db;
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
 import com.garden.gardenorganizerapp.dataobjects.PlantingSpot;
-import com.garden.gardenorganizerapp.db.daobase.AbstractAllDAO;
+import com.garden.gardenorganizerapp.db.daobase.AbstractDAO;
+import com.garden.gardenorganizerapp.db.daobase.IDAO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
-public class PlantingAreaDAO extends AbstractAllDAO<PlantingArea> {
+public class PlantingAreaDAO extends AbstractDAO<PlantingArea> implements IDAO<PlantingArea> {
 
     public PlantingAreaDAO() {
         super(new PlantingArea());

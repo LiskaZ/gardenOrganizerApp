@@ -3,9 +3,10 @@ package com.garden.gardenorganizerapp.db;
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.Garden;
 import com.garden.gardenorganizerapp.dataobjects.PlantingArea;
-import com.garden.gardenorganizerapp.db.daobase.AbstractAllDAO;
+import com.garden.gardenorganizerapp.db.daobase.AbstractDAO;
+import com.garden.gardenorganizerapp.db.daobase.IDAO;
 
-public class GardenDAO extends AbstractAllDAO<Garden> {
+public class GardenDAO extends AbstractDAO<Garden> implements IDAO<Garden> {
 
     public GardenDAO() {
         super(new Garden());

@@ -1,5 +1,6 @@
 package com.garden.gardenorganizerapp.db.daobase;
 
+import com.garden.gardenorganizerapp.dataobjects.DBObject;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBEntity;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntity;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBField;
@@ -75,6 +76,10 @@ public class DBObjectMetaInfoHelper<T> {
         {
             return f.getAnnotation(DBField.class).name();
         }
+        else if(isFKField(f))
+        {
+            return f.getAnnotation(DBFKEntity.class).name();
+        }
 
         return "";
     }
@@ -82,6 +87,11 @@ public class DBObjectMetaInfoHelper<T> {
     public Vector<Field> getNonNullFields(T obj){
         Vector<Field> fields = new Vector<>();
         for(Field f: getDBFields()){
+            if(isFieldValueNonNull(f, obj)){
+                fields.add(f);
+            }
+        }
+        for(Field f: getFKFields()){
             if(isFieldValueNonNull(f, obj)){
                 fields.add(f);
             }
@@ -227,12 +237,12 @@ public class DBObjectMetaInfoHelper<T> {
         return isFKField(f) && f.getAnnotation(DBFKEntity.class).cascade();
     }
 
-    public AbstractDAO<? extends IDAO> createDao(Field f) {
+    public AbstractDAO<? extends IDAO> createDao(Class<?> c) {
 
         ClassLoader loader = ClassLoader.getSystemClassLoader();
         AbstractDAO<? extends IDAO> dao = null;
         try {
-            dao = (AbstractDAO<? extends IDAO>) loader.loadClass(getDaoClassName(f)).getDeclaredConstructor().newInstance();
+            dao = (AbstractDAO<? extends IDAO>) loader.loadClass(getDaoClassName(c)).getDeclaredConstructor().newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -250,8 +260,38 @@ public class DBObjectMetaInfoHelper<T> {
         return dao;
     }
 
-    private String getDaoClassName(Field f) throws ClassNotFoundException, IOException {
-        return "com.garden.gardenorganizerapp.db." + f.getType().getSimpleName() + "DAO";
+    private String getDaoClassName(Class<?> c) throws ClassNotFoundException, IOException {
+        return "com.garden.gardenorganizerapp.db." + c.getSimpleName() + "DAO";
     }
 
+    public Field getForeignKeyField(DBObject i)
+    {
+        for(Field f: i.getClass().getDeclaredFields())
+        {
+            if(f.getType() == type.getClass())
+            {
+                return f;
+            }
+        }
+
+        return null;
+    }
+
+    public Field getForeignKeyFieldLocal(DBObject i)
+    {
+        for(Field f: type.getClass().getDeclaredFields())
+        {
+            if(f.getType() ==  i.getClass())
+            {
+                return f;
+            }
+        }
+
+        return null;
+    }
+
+    public Class<? extends DBObject> getClassOfType()
+    {
+        return (Class<? extends DBObject>) type.getClass();
+    }
 }
