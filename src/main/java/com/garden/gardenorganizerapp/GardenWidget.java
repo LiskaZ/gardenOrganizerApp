@@ -3,12 +3,9 @@ package com.garden.gardenorganizerapp;
 import com.garden.gardenorganizerapp.dataobjects.*;
 import com.garden.gardenorganizerapp.db.VarietyDAO;
 import com.garden.gardenorganizerapp.viewcontrollers.GardenGridViewController;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
@@ -17,34 +14,48 @@ public class GardenWidget extends Canvas {
 
     private Garden TheGarden;
 
+    private GardenGridViewController controller;
+    private PlantingArea area = new PlantingArea();
+
     private Point2D mouseDraggingStartCoord = null;
     private Point2D currentMouseCoord = null;
     private Point2D currentMouseMoveCoordStartRec = null;
     private Point2D currentMouseMoveCoordEndRec = null;
 
-    private PlantingArea area = new PlantingArea();
+    public GardenWidget(Garden garden) {
+        super(garden.getWidth(), garden.getHeight());
+        this.TheGarden = garden;
 
-    public void setItem(Item item) {
+        drawGarden();
+    }
+
+    public void setController(GardenGridViewController gardenGridViewController) {
+        this.controller = gardenGridViewController;
+    }
+
+
+    public PlantingArea getCurrentPlantingArea() {
+        return area;
+    }
+
+    public void setPlantingArea() {
+        this.area = new PlantingArea();
+    }
+
+    public void setItemInPlantingArea(Item item) {
         if (this.area.getItem() == null && item != null) {
-            setOnMouseMoved(e -> onMouseMoved(e.getX(), e.getY()));
-            setOnMouseClicked(e -> onMouseClicked(e.getX(), e.getY()));
-
-            setOnMousePressed(e -> onMousePressed(e.getX(), e.getY()));
-
-            setOnMouseDragged(e -> onMouseDragged(e.getX(), e.getY()));
-
-
-            setOnMouseReleased(e -> onMouseReleased());
-
-            setOnScroll(e -> System.out.println("Mausrad gerdreht"));
-
-            setOnKeyTyped(e ->{
-                    if (e.getCode() == KeyCode.T) {
-                        System.out.println("Key pressed");
-                    }
-            });
+            activateGridActions();
         }
         this.area.setItem(item);
+    }
+
+    public void activateGridActions() {
+        setOnMouseMoved(e -> onMouseMoved(e.getX(), e.getY()));
+        setOnMouseClicked(e -> onMouseClicked(e.getX(), e.getY()));
+        setOnMousePressed(e -> onMousePressed(e.getX(), e.getY()));
+        setOnMouseDragged(e -> onMouseDragged(e.getX(), e.getY()));
+        setOnMouseReleased(e -> onMouseReleased());
+        setOnScroll(e -> System.out.println("Mausrad gerdreht"));
     }
 
     private void onMouseMoved(double x, double y) {
@@ -60,15 +71,6 @@ public class GardenWidget extends Canvas {
         drawGarden();
     }
 
-    private GardenGridViewController controller;
-
-    public GardenWidget(Garden garden) {
-        super(garden.getWidth(), garden.getHeight());
-        this.TheGarden = garden;
-
-        drawGarden();
-    }
-
     public void onMousePressed(double x, double y) {
         this.mouseDraggingStartCoord = new Point2D(x, y);
     }
@@ -78,14 +80,6 @@ public class GardenWidget extends Canvas {
         drawGarden();
     }
 
-    public void onMouseReleased() {
-        if (currentMouseCoord != null) {
-            addSelectedSpotsToPlantingArea();
-        }
-        drawGarden();
-    }
-
-    // TODO Sobald Area ohne Spots, muss Area archiviert werden
     public void onMouseClicked(double x, double y) {
         if (isAllowedToHandleClick()) {
             Point2D gridCoords =
@@ -102,6 +96,22 @@ public class GardenWidget extends Canvas {
         }
 
         drawGarden();
+    }
+
+    public void onMouseReleased() {
+        if (currentMouseCoord != null) {
+            addSelectedSpotsToPlantingArea();
+        }
+        drawGarden();
+    }
+
+
+    private boolean isAllowedToHandleClick() {
+        return this.currentMouseCoord == null;
+    }
+
+    private void enableHandleClick() {
+        currentMouseCoord = null;
     }
 
     private PlantingArea getAreaContainingSpotCoords(Point2D gridCoords) {
@@ -155,12 +165,15 @@ public class GardenWidget extends Canvas {
         }
     }
 
-    private boolean isAllowedToHandleClick() {
-        return this.currentMouseCoord == null;
-    }
-
-    private void enableHandleClick() {
-        currentMouseCoord = null;
+    
+    private void drawGarden() {
+        drawGrid();
+        drawSelectionRect();
+        drawPlantingAreas();
+        drawPlantingArea(area);
+        if (currentMouseMoveCoordStartRec != null) {
+            drawHoverRect();
+        }
     }
 
     private void drawGrid() {
@@ -182,13 +195,48 @@ public class GardenWidget extends Canvas {
 
     }
 
-    private void drawGarden() {
-        drawGrid();
-        drawSelectionRect();
-        drawPlantingAreas();
-        drawPlantingArea(area);
-        if (currentMouseMoveCoordStartRec != null) {
-            drawHoverRect();
+    private void drawSelectionRect() {
+        if (shouldDrawSelectionRect()) {
+            GraphicsContext gc = getGraphicsContext2D();
+            gc.setFill(new Color(0.5, 0.5, 0.5, 0.5));
+
+            gc.beginPath();
+            double posStartX = mouseDraggingStartCoord.getX();
+            double posStartY = mouseDraggingStartCoord.getY();
+
+            double posEndX = this.currentMouseCoord.getX();
+            double posEndY = this.currentMouseCoord.getY();
+
+            if (posStartX > posEndX) {
+                posStartX = this.currentMouseCoord.getX();
+                posEndX = mouseDraggingStartCoord.getX();
+            }
+            if (posStartY > posEndY) {
+                posStartY = this.currentMouseCoord.getY();
+                posEndY = mouseDraggingStartCoord.getY();
+            }
+            gc.fillRect(posStartX, posStartY, posEndX - posStartX, posEndY - posStartY);
+        }
+    }
+
+    private boolean shouldDrawSelectionRect() {
+        return this.currentMouseCoord != null;
+    }
+
+    private void drawPlantingAreas() {
+        for (PlantingArea area : TheGarden.getAreas()) {
+            drawPlantingArea(area);
+        }
+    }
+
+    private void drawPlantingArea(PlantingArea area) {
+        if (area != null) {
+            GraphicsContext gc = getGraphicsContext2D();
+            double gSize = TheGarden.getGridSize();
+            for (PlantingSpot s : area.getSpots()) {
+                gc.setFill(area.getItem().getColor());
+                gc.fillRect(s.getX() * gSize + 1, s.getY() * gSize + 1, gSize - 2, gSize - 2);
+            }
         }
     }
 
@@ -220,63 +268,6 @@ public class GardenWidget extends Canvas {
             return (int) n / TheGarden.getGridSize() + 1;
         }
     }
-
-    private boolean shouldDrawSelectionRect() {
-        return this.currentMouseCoord != null;
-    }
-
-    private void drawSelectionRect() {
-        if (shouldDrawSelectionRect()) {
-            GraphicsContext gc = getGraphicsContext2D();
-            gc.setFill(new Color(0.5, 0.5, 0.5, 0.5));
-
-            gc.beginPath();
-            double posStartX = mouseDraggingStartCoord.getX();
-            double posStartY = mouseDraggingStartCoord.getY();
-
-            double posEndX = this.currentMouseCoord.getX();
-            double posEndY = this.currentMouseCoord.getY();
-
-            if (posStartX > posEndX) {
-                posStartX = this.currentMouseCoord.getX();
-                posEndX = mouseDraggingStartCoord.getX();
-            }
-            if (posStartY > posEndY) {
-                posStartY = this.currentMouseCoord.getY();
-                posEndY = mouseDraggingStartCoord.getY();
-            }
-            gc.fillRect(posStartX, posStartY, posEndX - posStartX, posEndY - posStartY);
-        }
-    }
-
-    private void drawPlantingAreas() {
-        for (PlantingArea area : TheGarden.getAreas()) {
-            drawPlantingArea(area);
-        }
-    }
-
-    private void drawPlantingArea(PlantingArea area) {
-        if (area != null) {
-            GraphicsContext gc = getGraphicsContext2D();
-            double gSize = TheGarden.getGridSize();
-            for (PlantingSpot s : area.getSpots()) {
-                gc.setFill(area.getItem().getColor());
-                gc.fillRect(s.getX() * gSize + 1, s.getY() * gSize + 1, gSize - 2, gSize - 2);
-            }
-        }
-    }
-
-    public void newPlantingArea() {
-        this.area = new PlantingArea();
-    }
-
-    public PlantingArea getCurrentPlantingArea() {
-        return area;
-    }
-
-    public void setController(GardenGridViewController gardenGridViewController) {
-        this.controller = gardenGridViewController;
-    }
 }
 
-// TODO Items richtig integrieren
+// TODO Sobald Area ohne Spots, muss Area archiviert werden

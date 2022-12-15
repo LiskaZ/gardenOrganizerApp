@@ -118,7 +118,7 @@ public class GardenGridViewController implements IViewController {
             Item item = new Item();
             item.setVariety_ID(selectedVariety.getID());
             item.setColor(selectedVariety.getDefaultColor());
-            gardenWidget.setItem(item);
+            gardenWidget.setItemInPlantingArea(item);
         }
     }
 
@@ -136,7 +136,7 @@ public class GardenGridViewController implements IViewController {
                 item.setColor(env.getColor());
                 item.setEnvironment_ID(s);
                 item.setCount(1);
-                gardenWidget.setItem(item);
+                gardenWidget.setItemInPlantingArea(item);
             });
             buttonLayout.getChildren().add(envButton);
         }
@@ -149,7 +149,7 @@ public class GardenGridViewController implements IViewController {
 
         GardenDAO dao = new GardenDAO();
         dao.store(this.garden);
-        gardenWidget.newPlantingArea();
+        gardenWidget.setPlantingArea();
     }
 
     //TODO Spot hier wirklich entfernen oder Pflanze entfernen??
