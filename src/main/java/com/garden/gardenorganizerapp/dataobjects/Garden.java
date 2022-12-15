@@ -13,6 +13,7 @@ public class Garden extends DBObject {
     private int gridSize = 20;
     private double percentage;
 
+
     public Garden(int w, int h, String name, int gridSize, double percentage) {
         this.gridSize = gridSize;
         this.width = normalizeGrid(w);
@@ -21,6 +22,7 @@ public class Garden extends DBObject {
         this.areas = new Vector<PlantingArea>();
         this.percentage = percentage;
     }
+
 
     public void setName(String name) {
         this.name = name;

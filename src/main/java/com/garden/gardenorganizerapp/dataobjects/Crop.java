@@ -19,28 +19,28 @@ public class Crop extends DBObject{
     @DBFKEntity(name="DefaultVariety_ID", cascade = false)
     private Variety defaultVariety;
 
-    public Variety getDefaultVariety() {
-        return defaultVariety;
-    }
-
-    public void setDefaultVariety(Variety defaultVariety) {
-        this.defaultVariety = defaultVariety;
+    public void setName(String name) {
+        Name = name;
     }
 
     public String getName() {
         return Name;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setDefaultColor(Color defaultColor) {
+        this.defaultColor = defaultColor;
     }
 
     public Color getDefaultColor() {
         return defaultColor;
     }
 
-    public void setDefaultColor(Color defaultColor) {
-        this.defaultColor = defaultColor;
+    public void setDefaultVariety(Variety defaultVariety) {
+        this.defaultVariety = defaultVariety;
+    }
+
+    public Variety getDefaultVariety() {
+        return defaultVariety;
     }
 
     @Override

@@ -7,21 +7,10 @@ import java.util.Vector;
 
 public class PlantingArea extends DBObject {
 
+    private Item item;
+    private Vector<PlantingSpot> spots;
     private int gardenId = DBConnection.INVALID_ID;
 
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        if(item != null) {
-            this.item = item;
-        }
-    }
-
-    private Item item;
-
-    private Vector<PlantingSpot> spots;
 
     public PlantingArea() {
         this.spots = new Vector<>();
@@ -32,12 +21,15 @@ public class PlantingArea extends DBObject {
         this.item = item;
     }
 
-    public void setGardenId(int gardenId) {
-        this.gardenId = gardenId;
+
+    public void setItem(Item item) {
+        if(item != null) {
+            this.item = item;
+        }
     }
 
-    public int getGardenId() {
-        return gardenId;
+    public Item getItem() {
+        return item;
     }
 
     public void setSpots(Vector<PlantingSpot> spots) {
@@ -47,6 +39,15 @@ public class PlantingArea extends DBObject {
     public Vector<PlantingSpot> getSpots() {
         return spots;
     }
+
+    public void setGardenId(int gardenId) {
+        this.gardenId = gardenId;
+    }
+
+    public int getGardenId() {
+        return gardenId;
+    }
+
 
     public void addSpot(PlantingSpot spot) {
         this.spots.add(spot);

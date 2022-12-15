@@ -61,11 +61,11 @@ public class Item extends DBObject{
         return environment_ID;
     }
 
-    public int getCount() {
-        return count;
-    }
-
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    public int getCount() {
+        return count;
     }
 }

@@ -34,19 +34,19 @@ public class PlantingSpot extends DBObject{
         return y;
     }
 
-    public void setPlantingAreaId(int plantingAreaId) {
-        this.plantingAreaId = plantingAreaId;
-    }
-
-    public int getPlantingAreaId() {
-        return plantingAreaId;
-    }
-
     public String getDate() {
         return  date.toString();
     }
 
     public void setDate(LocalDate plantDate) {
         this.date = plantDate;
+    }
+
+    public void setPlantingAreaId(int plantingAreaId) {
+        this.plantingAreaId = plantingAreaId;
+    }
+
+    public int getPlantingAreaId() {
+        return plantingAreaId;
     }
 }
