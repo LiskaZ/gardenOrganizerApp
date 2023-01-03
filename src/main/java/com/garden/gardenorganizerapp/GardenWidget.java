@@ -160,8 +160,8 @@ public class GardenWidget extends Canvas {
             posEndY = TheGarden.normalizeCoordToGrid(mouseDraggingStartCoord.getY());
         }
 
-        int posFinalX = posStartX + hoverwidth / TheGarden.getGridSize() - 1;
-        int posFinalY = posStartY + hoverlength / TheGarden.getGridSize() - 1;
+        int posFinalX = posStartX + hoverlength / TheGarden.getGridSize() - 1;
+        int posFinalY = posStartY + hoverwidth / TheGarden.getGridSize() - 1;
 
         if (posFinalX < posEndX) {
             posFinalX = posEndX;
@@ -172,16 +172,27 @@ public class GardenWidget extends Canvas {
 
         for (int x = posStartX; x <= posFinalX; ++x) {
             for (int y = posStartY; y <= posFinalY; ++y) {
-                area.addSpot(new PlantingSpot(x, y));
+                boolean spotAt = false;
+                for (PlantingArea plantingArea : TheGarden.getAreas()) {
+                    if (plantingArea.containsSpotAt(new Point2D(x, y))) {
+                        spotAt = true;
+                        break;
+                    }
+                }
+
+                if (spotAt) {
+                    continue;
+                } else {
+                    area.addSpot(new PlantingSpot(x, y));
+                }
             }
         }
 
     }
 
-
     public void drawGarden() {
         drawGrid();
-        drawSelectionRect();
+        drawSelectedSpots();
         drawPlantingAreas();
         drawPlantingArea(area);
         if (currentMouseMoveCoordStartRec != null) {
@@ -208,7 +219,7 @@ public class GardenWidget extends Canvas {
 
     }
 
-    private void drawSelectionRect() {
+    private void drawSelectedSpots() {
         if (shouldDrawSelectionRect()) {
 
             double posStartX = mouseDraggingStartCoord.getX();
@@ -279,7 +290,7 @@ public class GardenWidget extends Canvas {
 
     private void drawHoverRect() {
         GraphicsContext gc = getGraphicsContext2D();
-        gc.setFill(new Color(0.136, 0.232, 0.136, 0.67));
+        gc.setFill(new Color(0.5, 0.5, 0.5, 0.5));
         gc.beginPath();
 
         double posStartX = currentMouseMoveCoordStartRec.getX();
