@@ -145,26 +145,37 @@ public class GardenWidget extends Canvas {
     }
 
     private void addSelectedSpotsToPlantingArea() {
-        double posStartX = mouseDraggingStartCoord.getX();
-        double posStartY = mouseDraggingStartCoord.getY();
+        int posStartX = TheGarden.normalizeCoordToGrid(mouseDraggingStartCoord.getX());
+        int posStartY = TheGarden.normalizeCoordToGrid(mouseDraggingStartCoord.getY());
 
-        double posEndX = this.currentMouseCoord.getX();
-        double posEndY = this.currentMouseCoord.getY();
+        int posEndX = TheGarden.normalizeCoordToGrid(this.currentMouseCoord.getX());
+        int posEndY = TheGarden.normalizeCoordToGrid(this.currentMouseCoord.getY());
 
         if (posStartX > posEndX) {
-            posStartX = this.currentMouseCoord.getX();
-            posEndX = mouseDraggingStartCoord.getX();
+            posStartX = TheGarden.normalizeCoordToGrid(this.currentMouseCoord.getX());
+            posEndX = TheGarden.normalizeCoordToGrid(mouseDraggingStartCoord.getX());
         }
         if (posStartY > posEndY) {
-            posStartY = this.currentMouseCoord.getY();
-            posEndY = mouseDraggingStartCoord.getY();
+            posStartY = TheGarden.normalizeCoordToGrid(this.currentMouseCoord.getY());
+            posEndY = TheGarden.normalizeCoordToGrid(mouseDraggingStartCoord.getY());
         }
 
-        for (int x = TheGarden.normalizeCoordToGrid(posStartX); x <= TheGarden.normalizeCoordToGrid(posEndX); ++x) {
-            for (int y = TheGarden.normalizeCoordToGrid(posStartY); y <= TheGarden.normalizeCoordToGrid(posEndY); ++y) {
+        int posFinalX = posStartX + hoverwidth / TheGarden.getGridSize() - 1;
+        int posFinalY = posStartY + hoverlength / TheGarden.getGridSize() - 1;
+
+        if (posFinalX < posEndX) {
+            posFinalX = posEndX;
+        }
+        if (posFinalY < posEndY) {
+            posFinalY = posEndY;
+        }
+
+        for (int x = posStartX; x <= posFinalX; ++x) {
+            for (int y = posStartY; y <= posFinalY; ++y) {
                 area.addSpot(new PlantingSpot(x, y));
             }
         }
+
     }
 
 
@@ -199,25 +210,49 @@ public class GardenWidget extends Canvas {
 
     private void drawSelectionRect() {
         if (shouldDrawSelectionRect()) {
-            GraphicsContext gc = getGraphicsContext2D();
-            gc.setFill(new Color(0.5, 0.5, 0.5, 0.5));
 
-            gc.beginPath();
             double posStartX = mouseDraggingStartCoord.getX();
-            double posStartY = mouseDraggingStartCoord.getY();
-
             double posEndX = this.currentMouseCoord.getX();
+
+            double posStartY = mouseDraggingStartCoord.getY();
             double posEndY = this.currentMouseCoord.getY();
 
             if (posStartX > posEndX) {
                 posStartX = this.currentMouseCoord.getX();
                 posEndX = mouseDraggingStartCoord.getX();
             }
+
             if (posStartY > posEndY) {
                 posStartY = this.currentMouseCoord.getY();
                 posEndY = mouseDraggingStartCoord.getY();
             }
-            gc.fillRect(posStartX, posStartY, posEndX - posStartX, posEndY - posStartY);
+
+            posStartX = posStartX - posStartX % TheGarden.getGridSize();
+            posStartY = posStartY - posStartY % TheGarden.getGridSize();
+
+            double posFinalX = posEndX - posStartX;
+            double posFinalY = posEndY - posStartY;
+
+            GraphicsContext gc = getGraphicsContext2D();
+            gc.setFill(new Color(0.5, 0.5, 0.5, 0.5));
+
+            gc.beginPath();
+
+            if (area.getItem() != null) {
+                if (area.getItem().getVariety() == null) {
+                    gc.fillRect(posStartX, posStartY, posFinalX, posFinalY);
+                } else {
+                    Variety v = area.getItem().getVariety();
+                    setHoverlength(v);
+                    if (posFinalX < hoverlength) {
+                        posFinalX = hoverlength;
+                    }
+                    if (posFinalY < hoverwidth) {
+                        posFinalY = hoverwidth;
+                    }
+                    gc.fillRect(posStartX, posStartY, posFinalX, posFinalY);
+                }
+            }
         }
     }
 
@@ -256,10 +291,7 @@ public class GardenWidget extends Canvas {
                 this.currentMouseMoveCoordEndRec = new Point2D(posStartX + 1, posStartY + 1);
             } else {
                 Variety v = area.getItem().getVariety();
-                if (hoverwidth == 0 && hoverlength == 0){
-                    this.hoverlength = TheGarden.normalizeGrid(v.getPlantSpacing());
-                    this.hoverwidth = TheGarden.normalizeGrid(v.getRowSpacing());
-                }
+                setHoverlength(v);
                 gc.fillRect(posStartX * g, posStartY * g, hoverlength, hoverwidth);
                 if (turned) {
                     this.currentMouseMoveCoordEndRec = new Point2D(posStartX + normalizeCoordToArea(v.getRowSpacing()), posStartY + normalizeCoordToArea(v.getPlantSpacing()));
@@ -267,6 +299,13 @@ public class GardenWidget extends Canvas {
                     this.currentMouseMoveCoordEndRec = new Point2D(posStartX + normalizeCoordToArea(v.getPlantSpacing()), posStartY + normalizeCoordToArea(v.getRowSpacing()));
                 }
             }
+        }
+    }
+
+    private void setHoverlength(Variety v) {
+        if (hoverwidth == 0 && hoverlength == 0){
+            this.hoverlength = TheGarden.normalizeGrid(v.getPlantSpacing());
+            this.hoverwidth = TheGarden.normalizeGrid(v.getRowSpacing());
         }
     }
 
