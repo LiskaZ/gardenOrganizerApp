@@ -36,10 +36,20 @@ public class GardenApplication extends Application {
     }
 }
 
-// TODO Gartengröße muss sich am Canvas anpassen, nicht an den Daten selbst
+// TODO 02: Markieren nicht mehr außerhalb des Gartens möglich
 
-// TODO Markieren nicht mehr außerhalb des Gartens möglich
+// TODO 03: scaling nicht immer angewandt
 
-// TODO scaling nicht immer angewandt
+// TODO 04: gute Nachbarn einbauen
 
-// TODO remove spots from overlapping area definition
+// TODO 05: Empfehlungen für Anzahl Pflanzen
+
+// TODO 06: Seasons einführen mit Button zum Starten einer neuen Saison
+// TODO 07: gute Pflanznachfolger anhand Season einbauen
+// TODO 08: Übersicht Seasons auswählbar machen
+// TODO 09: Übersicht gepflanzter Pflanzen
+// TODO 10: Kalender einbauen
+
+// TODO 11: Entfernen von Pflanzen erleichtern - größere Mengen entfernbar, nicht nur per Einzelklick, evtl. eigener Button?
+
+// TODO Sobald Area ohne Spots, muss Area archiviert werden

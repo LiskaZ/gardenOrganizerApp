@@ -11,9 +11,9 @@ import javafx.scene.paint.Paint;
 
 public class GardenWidget extends Canvas {
 
-    private Garden TheGarden;
+    private final Garden TheGarden;
 
-    private GardenGridViewController controller;
+    private final GardenGridViewController controller;
     private PlantingArea area = new PlantingArea();
 
     private Point2D mouseDraggingStartCoord = null;
@@ -24,16 +24,14 @@ public class GardenWidget extends Canvas {
     private int hoverlength = 0;
     private int hoverwidth = 0;
     private boolean turned = false;
+    private double gridSize;
 
-    public GardenWidget(Garden garden) {
+    public GardenWidget(Garden garden, GardenGridViewController gardenGridViewController) {
         super(garden.getWidth(), garden.getHeight());
+        this.controller = gardenGridViewController;
         this.TheGarden = garden;
 
         drawGarden();
-    }
-
-    public void setController(GardenGridViewController gardenGridViewController) {
-        this.controller = gardenGridViewController;
     }
 
     public PlantingArea getCurrentPlantingArea() {
@@ -160,8 +158,8 @@ public class GardenWidget extends Canvas {
             posEndY = TheGarden.normalizeCoordToGrid(mouseDraggingStartCoord.getY());
         }
 
-        int posFinalX = posStartX + hoverlength / TheGarden.getGridSize() - 1;
-        int posFinalY = posStartY + hoverwidth / TheGarden.getGridSize() - 1;
+        double posFinalX = posStartX + hoverlength / gridSize - 1;
+        double posFinalY = posStartY + hoverwidth / gridSize - 1;
 
         if (posFinalX < posEndX) {
             posFinalX = posEndX;
@@ -180,9 +178,7 @@ public class GardenWidget extends Canvas {
                     }
                 }
 
-                if (spotAt) {
-                    continue;
-                } else {
+                if (!spotAt) {
                     area.addSpot(new PlantingSpot(x, y));
                 }
             }
@@ -201,20 +197,39 @@ public class GardenWidget extends Canvas {
     }
 
     private void drawGrid() {
+        double sceneSize = controller.getGardenCanvas().getScene().getHeight();
+        double gardenSize = sceneSize - 150;
+        double width = TheGarden.getWidth();
+        double height = TheGarden.getHeight();
+        double gridSize = TheGarden.getGridSize();
+
+        if (width > gardenSize && width > height){
+            double percentage = gardenSize/ width;
+            width = gardenSize - gardenSize % gridSize;
+            height = (height * percentage) - ((height * percentage) % gridSize);
+            this.gridSize = gridSize * percentage;
+        }
+        if (height > gardenSize && height > width){
+            double percentage = gardenSize/ height;
+            height = gardenSize - gardenSize % gridSize;
+            width = (width * percentage) - ((width * percentage) % gridSize);
+            this.gridSize = gridSize * percentage;
+        }
+
+
         GraphicsContext gc = getGraphicsContext2D();
         gc.beginPath();
-
         gc.setFill(Paint.valueOf("#847743"));
-        gc.fillRect(0, 0, this.TheGarden.getWidth(), this.TheGarden.getHeight());
+        gc.fillRect(0, 0, width, height);
 
         gc.setStroke(Paint.valueOf("#625932"));
 
-        for (int i = 0; i <= this.TheGarden.getHeight(); i += TheGarden.getGridSize()) {
-            gc.strokeLine(0, i, this.TheGarden.getWidth(), i);
+        for (int i = 0; i <= height; i += gridSize) {
+            gc.strokeLine(0, i, width, i);
         }
 
-        for (int i = 0; i <= this.TheGarden.getWidth(); i += TheGarden.getGridSize()) {
-            gc.strokeLine(i, 0, i, this.TheGarden.getHeight());
+        for (int i = 0; i <= width; i += gridSize) {
+            gc.strokeLine(i, 0, i, height);
         }
 
     }
@@ -238,8 +253,8 @@ public class GardenWidget extends Canvas {
                 posEndY = mouseDraggingStartCoord.getY();
             }
 
-            posStartX = posStartX - posStartX % TheGarden.getGridSize();
-            posStartY = posStartY - posStartY % TheGarden.getGridSize();
+            posStartX = posStartX - posStartX % gridSize;
+            posStartY = posStartY - posStartY % gridSize;
 
             double posFinalX = posEndX - posStartX;
             double posFinalY = posEndY - posStartY;
@@ -280,7 +295,7 @@ public class GardenWidget extends Canvas {
     private void drawPlantingArea(PlantingArea area) {
         if (area != null) {
             GraphicsContext gc = getGraphicsContext2D();
-            double gSize = TheGarden.getGridSize();
+            double gSize = gridSize;
             for (PlantingSpot s : area.getSpots()) {
                 gc.setFill(area.getItem().getColor());
                 gc.fillRect(s.getX() * gSize + 1, s.getY() * gSize + 1, gSize - 2, gSize - 2);
@@ -295,7 +310,7 @@ public class GardenWidget extends Canvas {
 
         double posStartX = currentMouseMoveCoordStartRec.getX();
         double posStartY = currentMouseMoveCoordStartRec.getY();
-        int g = TheGarden.getGridSize();
+        double g = gridSize;
         if (area.getItem() != null) {
             if (area.getItem().getVariety() == null) {
                 gc.fillRect(posStartX * g, posStartY * g, g, g);
@@ -321,10 +336,10 @@ public class GardenWidget extends Canvas {
     }
 
     private int normalizeCoordToArea(double n) {
-        if (n % TheGarden.getGridSize() == 0) {
-            return (int) n / TheGarden.getGridSize();
+        if (n % gridSize == 0) {
+            return (int) (n / gridSize);
         } else {
-            return (int) n / TheGarden.getGridSize() + 1;
+            return (int) (n / gridSize) + 1;
         }
     }
 
@@ -332,12 +347,6 @@ public class GardenWidget extends Canvas {
         int turner = hoverlength;
         hoverlength = hoverwidth;
         hoverwidth = turner;
-        if (turned) {
-            turned = false;
-        } else {
-            turned = true;
-        }
+        turned = !turned;
     }
 }
-
-// TODO Sobald Area ohne Spots, muss Area archiviert werden
