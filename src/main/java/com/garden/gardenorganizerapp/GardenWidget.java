@@ -36,6 +36,10 @@ public class GardenWidget extends Canvas {
         drawGarden();
     }
 
+    public void setController(GardenGridViewController gardenGridViewController) {
+        this.controller = gardenGridViewController;
+    }
+
     public PlantingArea getCurrentPlantingArea() {
         return area;
     }
@@ -319,7 +323,10 @@ public class GardenWidget extends Canvas {
                 this.currentMouseMoveCoordEndRec = new Point2D(posStartX + 1, posStartY + 1);
             } else {
                 Variety v = area.getItem().getVariety();
-                setHoverlength(v);
+                if (hoverwidth == 0 && hoverlength == 0){
+                    this.hoverlength = TheGarden.normalizeGrid(v.getPlantSpacing());
+                    this.hoverwidth = TheGarden.normalizeGrid(v.getRowSpacing());
+                }
                 gc.fillRect(posStartX * g, posStartY * g, hoverlength, hoverwidth);
                 if (turned) {
                     this.currentMouseMoveCoordEndRec = new Point2D(posStartX + normalizeCoordToArea(v.getRowSpacing()), posStartY + normalizeCoordToArea(v.getPlantSpacing()));
