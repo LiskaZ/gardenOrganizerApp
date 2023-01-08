@@ -59,9 +59,16 @@ public class GardenGridViewController implements IViewController {
 
     public void setGarden(Garden garden) {
         this.garden = garden;
-        gardenWidget = new GardenWidget(this.garden);
-        gardenWidget.setController(this);
+        gardenWidget = new GardenWidget(this.garden, this);
         createGardenLayer();
+    }
+
+    public VBox getGardenCanvas() {
+        return gardenCanvas;
+    }
+
+    public Scene getGardenScene() {
+        return gardenScene;
     }
 
     public void createGardenLayer() {

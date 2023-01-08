@@ -51,23 +51,8 @@ public class NewGardenViewController implements IViewController{
         double height = readNumber(heightIntegerField);
         double gridSize = readNumber(gridSizeIntegerField);
 
-        int gardenSize = sceneSize - 150;
-        double percentage = 1;
 
-        if (width > gardenSize && width > height){
-            percentage = gardenSize/ width;
-            width = gardenSize;
-            height = (height * percentage);
-            gridSize = gridSize * percentage;
-        }
-        if (height > gardenSize && height > width){
-            percentage = gardenSize/ height;
-            height = gardenSize;
-            width = (width * percentage);
-            gridSize = gridSize * percentage;
-        }
-
-        Garden g = new Garden((int) width, (int) height, titleTextField.getText(), (int) gridSize, percentage);
+        Garden g = new Garden((int) width, (int) height, titleTextField.getText(), (int) gridSize);
 
         GardenDAO dao = new GardenDAO();
         if (dao.store(g)) {
