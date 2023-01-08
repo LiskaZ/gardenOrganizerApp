@@ -1,8 +1,6 @@
 package com.garden.gardenorganizerapp;
 
-import com.garden.gardenorganizerapp.dataobjects.Variety;
 import com.garden.gardenorganizerapp.db.DBConnection;
-import com.garden.gardenorganizerapp.db.VarietyDAO;
 import com.garden.gardenorganizerapp.viewcontrollers.StartViewController;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -36,9 +34,7 @@ public class GardenApplication extends Application {
     }
 }
 
-// TODO 02: Markieren nicht mehr außerhalb des Gartens möglich
-
-// TODO 03: scaling nicht immer angewandt
+// TODO 03: scaling nicht immer angewandt, Beispelgröße benötigt
 
 // TODO 04: gute Nachbarn einbauen
 
