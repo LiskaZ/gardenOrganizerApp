@@ -53,8 +53,6 @@ public class Garden extends DBObject{
         this.name = name;
     }
 
-    // Prozent, um die der Garten verkleinert wurde
-
     public int getGridSize() {
         return gridSize;
     }
@@ -76,7 +74,6 @@ public class Garden extends DBObject{
         this.name = name;
         this.areas = new Vector<PlantingArea>();
     }
-
 
     public int normalizeGrid(int n) {
         if (n % this.gridSize >= this.gridSize / 2) {
