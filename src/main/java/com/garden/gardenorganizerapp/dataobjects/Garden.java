@@ -93,7 +93,7 @@ public class Garden extends DBObject{
 
     public void addPlantingArea(PlantingArea area)
     {
-        if(null != area) {
+        if(area != null) {
             areas.add(area);
         }
     }

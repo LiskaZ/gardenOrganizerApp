@@ -36,10 +36,6 @@ public class GardenWidget extends Canvas {
         drawGarden();
     }
 
-    public void setController(GardenGridViewController gardenGridViewController) {
-        this.controller = gardenGridViewController;
-    }
-
     public PlantingArea getCurrentPlantingArea() {
         return area;
     }
