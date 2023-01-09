@@ -25,6 +25,8 @@ public class GardenWidget extends Canvas {
     private int hoverwidth = 0;
     private boolean turned = false;
     private double gridSize;
+    private double width;
+    private double height;
 
     public GardenWidget(Garden garden, GardenGridViewController gardenGridViewController) {
         super(garden.getWidth(), garden.getHeight());
@@ -203,20 +205,20 @@ public class GardenWidget extends Canvas {
     private void drawGrid() {
         double sceneSize = controller.getGardenCanvas().getScene().getHeight();
         double gardenSize = sceneSize - 150;
-        double width = TheGarden.getWidth();
-        double height = TheGarden.getHeight();
-        double gridSize = TheGarden.getGridSize();
+        this.width = TheGarden.getWidth();
+        this.height = TheGarden.getHeight();
+        this.gridSize = TheGarden.getGridSize();
 
         if (width > gardenSize && width > height){
             double percentage = gardenSize/ width;
-            width = gardenSize - gardenSize % gridSize;
-            height = (height * percentage) - ((height * percentage) % gridSize);
+            this.width = gardenSize - gardenSize % gridSize;
+            this.height = (height * percentage) - ((height * percentage) % gridSize);
             this.gridSize = gridSize * percentage;
         }
         if (height > gardenSize && height > width){
             double percentage = gardenSize/ height;
-            height = gardenSize - gardenSize % gridSize;
-            width = (width * percentage) - ((width * percentage) % gridSize);
+            this.height = gardenSize - gardenSize % gridSize;
+            this.width = (width * percentage) - ((width * percentage) % gridSize);
             this.gridSize = gridSize * percentage;
         }
 
@@ -315,7 +317,7 @@ public class GardenWidget extends Canvas {
         double posStartX = currentMouseMoveCoordStartRec.getX();
         double posStartY = currentMouseMoveCoordStartRec.getY();
         int g = TheGarden.getGridSize();
-        if (area.getItem() != null) {
+        if (area.getItem() != null && posStartX < width && posStartY < height) {
             if (area.getItem().getVariety() == null) {
                 gc.fillRect(posStartX * g, posStartY * g, g, g);
                 this.currentMouseMoveCoordEndRec = new Point2D(posStartX + 1, posStartY + 1);
