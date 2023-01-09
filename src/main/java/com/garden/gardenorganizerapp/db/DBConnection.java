@@ -30,7 +30,6 @@ public class DBConnection {
             if(s.getUpdateCount() > 0) {
                 insertId = lastInsertId();
             }
-            //close();
         }
         catch (SQLException e) {
             System.out.println(String.format("During Query: \"%s\"", sql));

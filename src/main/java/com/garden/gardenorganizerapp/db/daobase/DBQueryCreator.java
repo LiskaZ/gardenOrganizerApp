@@ -118,6 +118,8 @@ public class DBQueryCreator<T> {
                 return escapeString(((String) val).toString());
             } else if (f.getType() == Color.class) {
                 return escapeString(((Color) val).toString());
+            } else if (f.getType() == java.time.LocalDate.class) {
+                return escapeString(((java.time.LocalDate) val).toString());
             } else if(f.getType().getSuperclass() == DBObject.class){
                 try {
                     return escapeInt(((DBObject)f.get(obj)).getID());

@@ -13,7 +13,7 @@ public class GardenWidget extends Canvas {
 
     private final Garden TheGarden;
 
-    private final GardenGridViewController controller;
+    private GardenGridViewController controller;
     private PlantingArea area = new PlantingArea();
 
     private Point2D mouseDraggingStartCoord = null;
