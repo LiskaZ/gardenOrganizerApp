@@ -2,7 +2,10 @@ package com.garden.gardenorganizerapp.db.daobase;
 
 import com.garden.gardenorganizerapp.GardenApplication;
 import com.garden.gardenorganizerapp.dataobjects.DBObject;
-import com.garden.gardenorganizerapp.dataobjects.annotations.*;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntityList;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBField;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBPrimaryKey;
 import com.garden.gardenorganizerapp.db.DBConnection;
 import javafx.scene.paint.Color;
 
@@ -118,8 +121,10 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
         {
             obj.setID(id);
             storeForeignEntitiesList(obj);
+            storeForeignSingleEntities(obj);
 
-            return true;
+            // update foreign key ids in obj for foreign entities
+            return c.insertQuery(queryCreator.createUpdateQuery(obj)) == id;
         }
 
         return false;
@@ -224,22 +229,6 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
                             }
 
                             f.set(obj, foreignObjects);
-
-/*                            for(DBObject o: foreignObjects)
-                            {
-                                vec.add((? extends DBObject)o);*/
-//                            for (DBObject i : vec) {
-//
-//                                Field fkField = infoHelper.getForeignKeyField(i);
-//                                fkField.setAccessible(true);
-//                                DBObject foreignObject = ((DBObject) fkField.get(i));
-//                                if (null != foreignObject) {
-//                                    //fkField.set(i, infoHelper.createInstance());
-//                                    dao.store(i);
-//                                }
-//                                ((DBObject) fkField.get(i)).setID(obj.getID());
-
-//                            }
                         } catch (IllegalAccessException e) {
                             throw new RuntimeException(e);
                         }
@@ -255,28 +244,17 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
         return true;
     }
 
-    private boolean storeForeignEntitiesList(T obj) {
+    private boolean storeForeignEntitiesList(T parentObjToStore) {
         boolean res = true;
         for (Field f : infoHelper.getAnnotationFields(DBFKEntityList.class)) {
             f.setAccessible(true);
             if (f.getType() == Vector.class) {
                 try {
-                    Vector<? extends DBObject> vec = (Vector<? extends DBObject>)f.get(obj);
-                    Class<?> foreignType = f.getAnnotation(DBFKEntityList.class).foreignType();
+                    Vector<? extends DBObject> childVector = (Vector<? extends DBObject>)f.get(parentObjToStore);
+                    Class<?> vectorObjectType = f.getAnnotation(DBFKEntityList.class).foreignType();
 
-                    for(DBObject i: vec) {
-                        AbstractDAO<? extends DBObject> dao = infoHelper.createDao(foreignType);
-
-                        Field fkField = infoHelper.getForeignKeyField(i);
-                        fkField.setAccessible(true);
-                        DBObject foreignObject = ((DBObject)fkField.get(i));
-                        if(null == foreignObject)
-                        {
-                            fkField.set(i, infoHelper.createInstance());
-                        }
-                        ((DBObject)fkField.get(i)).setID(obj.getID());
-
-                        dao.store(i);
+                    for(DBObject childObjectToStore: childVector) {
+                        storeForeignEntityPrivate(parentObjToStore, vectorObjectType, childObjectToStore);
                     }
                 }
                 catch (IllegalAccessException e) {
@@ -286,6 +264,40 @@ public abstract class AbstractDAO<T extends DBObject> implements IDAO<T>{
         }
 
         return res;
+    }
+
+    private boolean storeForeignSingleEntities(T parentObjToStore) {
+        boolean res = true;
+        for (Field f : infoHelper.getAnnotationFields(DBFKEntity.class)) {
+            if(f.getAnnotation(DBFKEntity.class).cascade()) {
+                f.setAccessible(true);
+                try {
+                    DBObject singleEntityObj = (DBObject) f.get(parentObjToStore);
+                    storeForeignEntityPrivate(parentObjToStore, f.getType(), singleEntityObj);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return res;
+    }
+
+    private void storeForeignEntityPrivate(T parentObjToStore, Class<?> childObjectType, DBObject childObjectToStore) throws IllegalAccessException {
+        if(null != childObjectToStore) {
+            AbstractDAO<? extends DBObject> dao = infoHelper.createDao(childObjectType);
+
+            Field fkFieldInChildObj = infoHelper.getForeignKeyField(childObjectToStore);
+            if (null != fkFieldInChildObj) {
+                fkFieldInChildObj.setAccessible(true);
+                DBObject foreignObject = ((DBObject) fkFieldInChildObj.get(childObjectToStore));
+                if (null == foreignObject) {
+                    fkFieldInChildObj.set(childObjectToStore, infoHelper.createInstance());
+                }
+                ((DBObject) fkFieldInChildObj.get(childObjectToStore)).setID(parentObjToStore.getID());
+            }
+            dao.store(childObjectToStore);
+        }
     }
 
     protected boolean hasPK()

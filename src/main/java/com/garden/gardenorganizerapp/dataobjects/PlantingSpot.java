@@ -18,7 +18,7 @@ public class PlantingSpot extends DBObject{
     @DBField(name = "EndDate")
     private LocalDate endDate;
 
-    @DBFKEntity(name = "PlantingArea_ID")
+    @DBFKEntity(name = "PlantingArea_ID", cascade = false)
     private PlantingArea plantingArea;
 
     public LocalDate getPlantDate() {
