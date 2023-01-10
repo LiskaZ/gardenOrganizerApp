@@ -59,7 +59,17 @@ public class PlantingArea extends DBObject {
     }
 
     public void addSpot(Point2D coord) {
-        this.spots.add(new PlantingSpot((int) coord.getX(), (int) coord.getY()));
+        boolean newSpot = true;
+        for (PlantingSpot spot : spots) {
+            if (spot.getX() == coord.getX() && spot.getY() == coord.getY()){
+                newSpot = false;
+                break;
+            }
+        }
+        
+        if (newSpot){
+            this.spots.add(new PlantingSpot((int) coord.getX(), (int) coord.getY()));
+        }
     }
 
     public boolean containsSpotAt(Point2D coord) {
