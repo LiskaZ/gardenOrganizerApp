@@ -2,6 +2,7 @@ package com.garden.gardenorganizerapp.dataobjects;
 
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBEntity;
 import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntity;
+import com.garden.gardenorganizerapp.dataobjects.annotations.DBFKEntityList;
 import javafx.geometry.Point2D;
 
 import java.util.Vector;
@@ -14,6 +15,9 @@ public class PlantingArea extends DBObject {
 
     @DBFKEntity(name = "Item_ID")
     private Item item;
+
+    @DBFKEntityList(foreignType = PlantingSpot.class)
+    private Vector<PlantingSpot> spots;
 
     public Garden getGarden() {
         return garden;
@@ -32,8 +36,6 @@ public class PlantingArea extends DBObject {
             this.item = item;
         }
     }
-
-    private Vector<PlantingSpot> spots;
 
     public PlantingArea() {
         this.spots = new Vector<>();

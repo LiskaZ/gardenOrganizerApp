@@ -13,7 +13,7 @@ public class GardenWidget extends Canvas {
 
     private final Garden TheGarden;
 
-    private final GardenGridViewController controller;
+    private GardenGridViewController controller;
     private PlantingArea area = new PlantingArea();
 
     private Point2D mouseDraggingStartCoord = null;
@@ -34,6 +34,10 @@ public class GardenWidget extends Canvas {
         this.TheGarden = garden;
 
         drawGarden();
+    }
+
+    public void setController(GardenGridViewController gardenGridViewController) {
+        this.controller = gardenGridViewController;
     }
 
     public PlantingArea getCurrentPlantingArea() {
@@ -312,7 +316,7 @@ public class GardenWidget extends Canvas {
 
         double posStartX = currentMouseMoveCoordStartRec.getX();
         double posStartY = currentMouseMoveCoordStartRec.getY();
-        double g = gridSize;
+        int g = TheGarden.getGridSize();
         if (area.getItem() != null && posStartX < width && posStartY < height) {
             if (area.getItem().getVariety() == null) {
                 gc.fillRect(posStartX * g, posStartY * g, g, g);
