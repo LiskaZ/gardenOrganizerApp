@@ -152,12 +152,14 @@ public class GardenGridViewController implements IViewController {
 
     public void onAddPlantsClick(ActionEvent actionEvent) {
         PlantingArea currentArea = gardenWidget.getCurrentPlantingArea();
-        currentArea.getItem().setCount((Integer) plantCount.getValue());
-        garden.addPlantingArea(currentArea);
+        if (!(currentArea == null) && !currentArea.equals("")) {
+            currentArea.getItem().setCount((Integer) plantCount.getValue());
+            garden.addPlantingArea(currentArea);
 
-        GardenDAO dao = new GardenDAO();
-        dao.store(this.garden);
-        gardenWidget.setPlantingArea();
+            GardenDAO dao = new GardenDAO();
+            dao.store(this.garden);
+            gardenWidget.setPlantingArea();
+        }
     }
 
     //TODO Spot hier wirklich entfernen oder Pflanze entfernen??
