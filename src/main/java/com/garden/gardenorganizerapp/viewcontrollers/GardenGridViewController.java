@@ -52,6 +52,9 @@ public class GardenGridViewController implements IViewController {
     private Spinner plantCount;
 
     @FXML
+    private Label recPlantCount;
+
+    @FXML
     Button newBed;
 
     public GardenGridViewController() throws IOException {
@@ -69,6 +72,14 @@ public class GardenGridViewController implements IViewController {
 
     public Scene getGardenScene() {
         return gardenScene;
+    }
+
+    public Label getRecPlantCount() {
+        return recPlantCount;
+    }
+
+    public void setRecPlantCount(Label recPlantCount) {
+        this.recPlantCount = recPlantCount;
     }
 
     public void createGardenLayer() {

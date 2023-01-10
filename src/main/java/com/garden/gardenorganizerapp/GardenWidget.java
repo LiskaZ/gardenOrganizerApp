@@ -1,10 +1,12 @@
 package com.garden.gardenorganizerapp;
 
 import com.garden.gardenorganizerapp.dataobjects.*;
+import com.garden.gardenorganizerapp.db.PlantingSpotDAO;
 import com.garden.gardenorganizerapp.viewcontrollers.GardenGridViewController;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
@@ -101,7 +103,23 @@ public class GardenWidget extends Canvas {
             enableHandleClick();
         }
 
+        setPlantingRecommendation();
         drawGarden();
+    }
+
+    private void setPlantingRecommendation() {
+        double areasize = area.getSpots().size();
+        Item item = area.getItem();
+        double neededAreaSpace;
+        if (item.getVariety() == null){
+            neededAreaSpace = 1;
+        } else {
+            neededAreaSpace = (item.getVariety().getPlantSpacing() / gridSize) * (item.getVariety().getRowSpacing() / gridSize);
+        }
+        int recPlants = (int) (areasize / neededAreaSpace);
+
+        Label recPlantCount = controller.getRecPlantCount();
+        recPlantCount.setText(String.format("Empfohlen: %d Pflanzen", recPlants));
     }
 
     public void onMouseReleased() {
@@ -143,7 +161,11 @@ public class GardenWidget extends Canvas {
         assert currentMouseMoveCoordEndRec != null;
         for (int i = (int) currentMouseMoveCoordStartRec.getX(); i < currentMouseMoveCoordEndRec.getX(); i++) {
             for (int j = (int) currentMouseMoveCoordStartRec.getY(); j < currentMouseMoveCoordEndRec.getY(); j++) {
-                area.addSpot(new Point2D(i, j));
+                PlantingSpotDAO dao = new PlantingSpotDAO();
+                boolean spotExists = dao.checkSpotExistence(i, j);
+                if(!spotExists && i< TheGarden.normalizeCoordToGrid(width) && j < TheGarden.normalizeCoordToGrid(height)){
+                    area.addSpot(new Point2D(i, j));
+                }
             }
         }
     }
