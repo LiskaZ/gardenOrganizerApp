@@ -66,7 +66,7 @@ public class PlantingArea extends DBObject {
                 break;
             }
         }
-        
+
         if (newSpot){
             this.spots.add(new PlantingSpot((int) coord.getX(), (int) coord.getY()));
         }

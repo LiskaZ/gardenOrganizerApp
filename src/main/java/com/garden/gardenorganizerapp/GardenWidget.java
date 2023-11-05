@@ -65,7 +65,6 @@ public class GardenWidget extends Canvas {
         setOnMousePressed(e -> onMousePressed(e.getX(), e.getY()));
         setOnMouseDragged(e -> onMouseDragged(e.getX(), e.getY()));
         setOnMouseReleased(e -> onMouseReleased());
-        setOnScroll(e -> System.out.println("Mausrad gerdreht"));
     }
 
     private void onMouseMoved(double x, double y) {
